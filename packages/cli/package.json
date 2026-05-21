@@ -1,0 +1,43 @@
+{
+  "name": "@trimly/cli",
+  "version": "0.1.0",
+  "description": "Trimly CLI — track and optimize your LLM token spend",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Joys-Lab",
+    "email": "contact@joys-lab.com",
+    "url": "https://joys-lab.com"
+  },
+  "contributors": [
+    {
+      "name": "Mikael Wawrzyczny",
+      "email": "mikaelwaw@gmail.com",
+      "url": "https://github.com/Mikael-W"
+    }
+  ],
+  "type": "module",
+  "bin": {
+    "trimly": "./bin/trimly.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "biome check ./src",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@trimly/core": "workspace:*",
+    "commander": "^12.1.0",
+    "kleur": "^4.1.5",
+    "cross-spawn": "^7.0.6"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
+    "@types/node": "^20.17.57",
+    "execa": "^9.5.2",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.3"
+  }
+}

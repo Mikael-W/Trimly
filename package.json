@@ -1,0 +1,34 @@
+{
+  "name": "trimly",
+  "version": "0.1.0",
+  "private": true,
+  "author": {
+    "name": "Joys-Lab",
+    "email": "contact@joys-lab.com",
+    "url": "https://joys-lab.com"
+  },
+  "contributors": [
+    {
+      "name": "Mikael Wawrzyczny",
+      "email": "mikaelwaw@gmail.com",
+      "url": "https://github.com/Mikael-W"
+    }
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "turbo": "^2.4.4",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@10.12.4"
+}

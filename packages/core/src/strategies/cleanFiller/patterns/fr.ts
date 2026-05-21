@@ -1,0 +1,27 @@
+import type { FillerPattern } from '../types.js'
+
+export const FR_FILLER_PATTERNS: FillerPattern[] = [
+  { id: 'fr-please-1', pattern: /\bs'?il (te|vous) pla[iî]t\b/gi, replace: '' },
+  { id: 'fr-please-2', pattern: /\bsvp\b/gi, replace: '' },
+  { id: 'fr-thanks-advance', pattern: /\bmerci d'avance\b/gi, replace: '' },
+  { id: 'fr-thanks-1', pattern: /\bmerci (beaucoup|bien|pour tout)\b/gi, replace: '' },
+  { id: 'fr-bother', pattern: /\bsi (ça|cela) ne (te|vous) (dérange|gêne) pas\b/gi, replace: '' },
+  { id: 'fr-wondering', pattern: /\bje me demandais si\b/gi, replace: '' },
+  { id: 'fr-could-you-1', pattern: /\best-ce que (tu|vous) (pourrais|pourriez)\b/gi, replace: '' },
+  { id: 'fr-could-you-2', pattern: /\bpourrais-tu\b/gi, replace: '' },
+  { id: 'fr-could-you-3', pattern: /\bpourriez-vous\b/gi, replace: '' },
+  { id: 'fr-allow', pattern: /\bsi je (peux|puis) me permettre\b/gi, replace: '' },
+  { id: 'fr-filler-actually', pattern: /\ben fait\b/gi, replace: '' },
+  { id: 'fr-filler-ducoup', pattern: /\bdu coup\b/gi, replace: '' },
+  { id: 'fr-filler-engros', pattern: /\ben gros\b/gi, replace: '' },
+  { id: 'fr-filler-voila', pattern: /\bvoilà\b/gi, replace: '' },
+  { id: 'fr-filler-bref', pattern: /\bbref\b/gi, replace: '' },
+  { id: 'fr-filler-basically', pattern: /\bbasiquement\b/gi, replace: '' },
+  { id: 'fr-broad', pattern: /\bdans les grandes lignes\b/gi, replace: '' },
+  { id: 'fr-greet-hi', pattern: /^(bonjour|salut|coucou)[,!]?\s*/gi, replace: '' },
+  { id: 'fr-explain-if', pattern: /\btu peux m'expliquer\b/gi, replace: 'explique' },
+  { id: 'fr-would-be-kind', pattern: /\bce serait sympa(thique)? si\b/gi, replace: '' },
+  { id: 'fr-dont-hesitate', pattern: /\bn'hésite pas à\b/gi, replace: '' },
+  { id: 'fr-if-possible', pattern: /\bsi possible\b/gi, replace: '' },
+  { id: 'fr-naturally', pattern: /\bbien (sûr|entendu)\b/gi, replace: '' },
+]

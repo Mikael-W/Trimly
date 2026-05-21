@@ -1,0 +1,52 @@
+{
+  "name": "@trimly/core",
+  "version": "0.1.0",
+  "description": "Trimly core — tokenization, pricing, storage, strategies",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Joys-Lab",
+    "email": "contact@joys-lab.com",
+    "url": "https://joys-lab.com"
+  },
+  "contributors": [
+    {
+      "name": "Mikael Wawrzyczny",
+      "email": "mikaelwaw@gmail.com",
+      "url": "https://github.com/Mikael-W"
+    }
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check ./src",
+    "clean": "rm -rf dist coverage"
+  },
+  "dependencies": {
+    "@anthropic-ai/tokenizer": "^0.0.4",
+    "@libsql/client": "^0.14.0",
+    "js-tiktoken": "^1.0.16",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.57",
+    "@types/uuid": "^10.0.0",
+    "tsup": "^8.4.0",
+    "vitest": "^3.2.3"
+  }
+}

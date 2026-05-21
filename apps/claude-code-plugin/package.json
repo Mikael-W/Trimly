@@ -1,0 +1,34 @@
+{
+  "name": "@trimly/claude-code-plugin",
+  "version": "0.1.0",
+  "description": "Trimly plugin for Claude Code",
+  "license": "Apache-2.0",
+  "type": "module",
+  "author": {
+    "name": "Joys-Lab",
+    "email": "contact@joys-lab.com",
+    "url": "https://joys-lab.com"
+  },
+  "contributors": [
+    {
+      "name": "Mikael Wawrzyczny",
+      "email": "mikaelwaw@gmail.com",
+      "url": "https://github.com/Mikael-W"
+    }
+  ],
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "biome check ./hooks ./commands ./scripts"
+  },
+  "dependencies": {
+    "@trimly/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.57",
+    "execa": "^9.5.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.3"
+  }
+}

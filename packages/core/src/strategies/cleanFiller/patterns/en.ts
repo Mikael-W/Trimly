@@ -1,0 +1,26 @@
+import type { FillerPattern } from '../types.js'
+
+export const EN_FILLER_PATTERNS: FillerPattern[] = [
+  { id: 'en-please', pattern: /\bplease\b/gi, replace: '' },
+  { id: 'en-thanks-advance', pattern: /\bthank(s| you) in advance\b/gi, replace: '' },
+  { id: 'en-could-you', pattern: /\bcould you\b/gi, replace: '' },
+  { id: 'en-would-you-mind', pattern: /\bwould you mind\b/gi, replace: '' },
+  { id: 'en-would-it-be', pattern: /\bwould it be possible to\b/gi, replace: '' },
+  { id: 'en-wondering', pattern: /\bi was wondering if\b/gi, replace: '' },
+  { id: 'en-wondering-2', pattern: /\bi wonder if\b/gi, replace: '' },
+  { id: 'en-basically', pattern: /\bbasically\b/gi, replace: '' },
+  { id: 'en-literally', pattern: /\bliterally\b/gi, replace: '' },
+  { id: 'en-actually', pattern: /\bactually\b/gi, replace: '' },
+  { id: 'en-really', pattern: /\breally\b/gi, replace: '' },
+  { id: 'en-quite', pattern: /\bquite\b/gi, replace: '' },
+  { id: 'en-very', pattern: /\bvery\b/gi, replace: '' },
+  { id: 'en-nutshell', pattern: /\bin a nutshell\b/gi, replace: '' },
+  { id: 'en-greet', pattern: /^(hello|hi|hey)[,!]?\s*/gi, replace: '' },
+  { id: 'en-hope', pattern: /\bi hope (you are|you're|this is) (doing well|helpful|okay|fine)\b/gi, replace: '' },
+  { id: 'en-feel-free', pattern: /\bfeel free to\b/gi, replace: '' },
+  { id: 'en-dont-hesitate', pattern: /\bdon't hesitate to\b/gi, replace: '' },
+  { id: 'en-if-possible', pattern: /\bif possible\b/gi, replace: '' },
+  { id: 'en-as-an-ai', pattern: /\bas an AI\b/gi, replace: '' },
+  { id: 'en-just', pattern: /\bjust\b/gi, replace: '' },
+  { id: 'en-like', pattern: /\blike,\s/gi, replace: '' },
+]

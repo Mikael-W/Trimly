@@ -1,0 +1,35 @@
+export interface FillerConfig {
+  enabled: boolean
+  languages: string[]
+  threshold_pct: number
+}
+
+export interface StorageConfig {
+  path: string
+  retention_days: number
+}
+
+export interface TrimlyConfig {
+  verbose: boolean
+  advisor: boolean
+  filler: FillerConfig
+  storage: StorageConfig
+  currency: 'USD' | 'EUR'
+  summary_on_session_end: boolean
+}
+
+export const DEFAULT_CONFIG: TrimlyConfig = {
+  verbose: false,
+  advisor: true,
+  filler: {
+    enabled: true,
+    languages: ['fr', 'en'],
+    threshold_pct: 20,
+  },
+  storage: {
+    path: '',
+    retention_days: 90,
+  },
+  currency: 'USD',
+  summary_on_session_end: true,
+}
