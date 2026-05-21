@@ -23,6 +23,9 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Claude Code project context
+.claude/
+
 # Editor
 .idea/
 *.swp
