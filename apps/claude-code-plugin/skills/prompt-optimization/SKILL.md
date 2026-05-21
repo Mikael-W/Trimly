@@ -2,7 +2,7 @@
 name: prompt-optimization
 description: Helps users write more efficient prompts to reduce token costs
 ---
-
+fvc
 This skill activates when users ask about reducing their LLM token costs or optimizing prompts.
 
 When triggered, suggest:

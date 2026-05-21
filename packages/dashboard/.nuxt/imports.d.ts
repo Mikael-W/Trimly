@@ -37,3 +37,4 @@ export { buildChartPath } from '../utils/chart';
 export { fmtCost, fmtCost5, fmtTokens, fmtRelTime, fmtDateTime } from '../utils/format';
 export { useI18n } from '../../../node_modules/.pnpm/vue-i18n@10.0.8_vue@3.5.34_typescript@5.9.3_/node_modules/vue-i18n/dist/vue-i18n';
 export { useRouteBaseName, useLocalePath, useLocaleRoute, useSwitchLocalePath, useLocaleHead, useBrowserLocale, useCookieLocale, useSetI18nParams, defineI18nRoute, defineI18nLocale, defineI18nConfig } from '../../../node_modules/.pnpm/@nuxtjs+i18n@9.5.6_@vue+compiler-dom@3.5.34_eslint@10.4.0_jiti@2.7.0__magicast@0.5.3_ro_0f44e1fb50dd396ef0eb05b871047554/node_modules/@nuxtjs/i18n/dist/runtime/composables/index';
+export { useNuxtDevTools } from '../../../node_modules/.pnpm/@nuxt+devtools@3.2.4_vite@7.3.3_@types+node@20.19.41_jiti@2.7.0_terser@5.47.1_yaml@2.9.0__vue@3.5.34_typescript@5.9.3_/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';

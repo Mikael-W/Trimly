@@ -37,6 +37,31 @@ describe('Given the cleanFiller strategy', () => {
     })
   })
 
+  describe('When called with a filler-heavy French prompt using new patterns', () => {
+    test('Then it removes greeting, hope-well, and would-possible phrases', () => {
+      const input = "Bonjour ! J'espère sincèrement que tu vas très bien aujourd'hui. Serait-il possible de bien vouloir m'expliquer ce que fait buildChartPath ?"
+      const result = cleanFiller(input, { languages: ['fr'] })
+      expect(result.applied).toBe(true)
+      expect(result.patternsMatched).toContain('fr-greet-hi')
+      expect(result.patternsMatched).toContain('fr-hope-well')
+      expect(result.patternsMatched).toContain('fr-would-possible')
+      expect(result.tokensSaved).toBeGreaterThan(10)
+      expect(result.text).not.toMatch(/bonjour/i)
+      expect(result.text).not.toMatch(/j'espère/i)
+      expect(result.text).not.toMatch(/serait.il possible/i)
+    })
+
+    test('Then it removes sincèrement/vraiment adverb fillers', () => {
+      const result = cleanFiller('Je voudrais sincèrement comprendre.', { languages: ['fr'] })
+      expect(result.text).not.toMatch(/sincèrement/i)
+    })
+
+    test('Then it removes si tu en as l énergie phrase', () => {
+      const result = cleanFiller("Explique-moi si tu en as l'énergie.", { languages: ['fr'] })
+      expect(result.text).not.toMatch(/si tu en as/i)
+    })
+  })
+
   describe('When called with an empty string', () => {
     test('Then it returns a no-op result with zero tokens saved', () => {
       const result = cleanFiller('')

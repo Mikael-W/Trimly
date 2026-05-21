@@ -43,8 +43,12 @@ async function main() {
         cache_creation_input_tokens: usage.cache_creation_input_tokens,
       })
 
+      const totalInput = (usage.input_tokens ?? 0)
+        + (usage.cache_read_input_tokens ?? 0)
+        + (usage.cache_creation_input_tokens ?? 0)
+
       await storage.updateEvent(event.id, {
-        tokens_input: usage.input_tokens,
+        tokens_input: totalInput,
         tokens_output: usage.output_tokens,
         tokens_cache_read: usage.cache_read_input_tokens ?? 0,
         tokens_cache_write: usage.cache_creation_input_tokens ?? 0,
@@ -75,24 +79,15 @@ async function extractUsageFromTranscript(transcriptPath) {
     for (let i = lines.length - 1; i >= 0; i--) {
       try {
         const msg = JSON.parse(lines[i])
-        if (msg.role === 'assistant' && msg.usage) {
-          return {
-            input_tokens: msg.usage.input_tokens ?? 0,
-            output_tokens: msg.usage.output_tokens ?? 0,
-            cache_read_input_tokens: msg.usage.cache_read_input_tokens ?? 0,
-            cache_creation_input_tokens: msg.usage.cache_creation_input_tokens ?? 0,
-            duration_ms: null,
-          }
-        }
-        // Also handle API response format
-        if (msg.type === 'message' && msg.usage) {
-          return {
-            input_tokens: msg.usage.input_tokens ?? 0,
-            output_tokens: msg.usage.output_tokens ?? 0,
-            cache_read_input_tokens: msg.usage.cache_read_input_tokens ?? 0,
-            cache_creation_input_tokens: msg.usage.cache_creation_input_tokens ?? 0,
-            duration_ms: null,
-          }
+        // Claude Code format: { message: { usage: {...} }, ... }
+        const usage = msg.message?.usage ?? msg.usage
+        if (!usage) continue
+        return {
+          input_tokens: usage.input_tokens ?? 0,
+          output_tokens: usage.output_tokens ?? 0,
+          cache_read_input_tokens: usage.cache_read_input_tokens ?? 0,
+          cache_creation_input_tokens: usage.cache_creation_input_tokens ?? 0,
+          duration_ms: null,
         }
       } catch {
         continue
