@@ -67,7 +67,7 @@ async function main() {
       core = await import('@trimly/core')
     }
 
-    const { countTokens, computeCost, cleanFiller, createStorage, getDefaultDbPath } = core
+    const { countTokens, computeCost, cleanFiller, analyzePrompt, reducePrompt, createStorage, getDefaultDbPath } = core
     const model = process.env['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-6'
     const provider = 'anthropic'
     const config = await loadConfig()
@@ -120,7 +120,7 @@ async function main() {
     })
     await storage.close()
 
-    // Advisor: block and suggest if savings are significant
+    // Advisor: filler detection
     const savingsPct = tokensInput > 0
       ? Math.round((fillerResult.tokensSaved / tokensInput) * 100)
       : 0
@@ -133,6 +133,23 @@ async function main() {
         hookSpecificOutput: {
           hookEventName: 'UserPromptSubmit',
           additionalContext: `[Trimly advisor] ${tokensInput} tokens (~$${costUsd.toFixed(5)}) · ${savingsPct}% de filler détecté.\nVersion allégée : "${suggestion}"\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n💡 Trimly: ${tokensInput} → ${tokensInput - fillerResult.tokensSaved} tokens (−${fillerResult.tokensSaved} · −$${costSavedUsd.toFixed(5)}) · Tape \`oui\` pour la version allégée ou \`non\` pour l'original.`,
+        },
+      }))
+      process.exit(0)
+    }
+
+    // Advisor: volume / code / log detection for devs
+    const analysis = analyzePrompt(prompt, tokensInput)
+    if (config.advisor && analysis.tip) {
+      const reduced = reducePrompt(prompt, analysis)
+      const reducedTokens = countTokens(provider, model, reduced)
+      const savedTokens = tokensInput - reducedTokens
+      const savedCost = computeCost(provider, model, { input_tokens: Math.max(0, savedTokens), output_tokens: 0 })
+      await savePending(prompt, reduced)
+      process.stdout.write(JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: 'UserPromptSubmit',
+          additionalContext: `[Trimly advisor] ${analysis.tip}\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n⚠️ Trimly: ${tokensInput} → ${reducedTokens} tokens (−${savedTokens} · −$${savedCost.toFixed(5)}) · ${analysis.tip.split('.')[0]}. Tape \`oui\` pour la version réduite ou \`non\` pour l'original.`,
         },
       }))
     }
