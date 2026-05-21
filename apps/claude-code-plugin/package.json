@@ -17,7 +17,7 @@
     }
   ],
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "echo 'plugin: no compile step (hooks are .mjs)'",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint": "biome check ./hooks ./commands ./scripts"

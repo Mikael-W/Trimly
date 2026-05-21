@@ -429,6 +429,29 @@ function generateOptionSegments(opts) {
   }
   return segments;
 }
+function fmtCost(n) {
+  return `$${n.toFixed(4)}`;
+}
+function fmtCost5(n) {
+  return `$${n.toFixed(5)}`;
+}
+function fmtTokens(n) {
+  if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)}k`;
+  return String(n);
+}
+function fmtRelTime(ts, now = Date.now()) {
+  const diff = now - ts;
+  const m = Math.floor(diff / 6e4);
+  if (m < 1) return "< 1m";
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h`;
+  return `${Math.floor(h / 24)}d`;
+}
+function fmtDateTime(ts) {
+  return new Date(ts).toLocaleString();
+}
 
-export { useFetch as u };
-//# sourceMappingURL=fetch-CBQjeXl2.mjs.map
+export { fmtCost5 as a, fmtDateTime as b, fmtRelTime as c, fmtTokens as d, fmtCost as f, useFetch as u };
+//# sourceMappingURL=format-q5tNrZ12.mjs.map

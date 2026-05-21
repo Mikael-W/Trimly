@@ -37921,17 +37921,17 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-C-7hcOFK.mjs')
+    component: () => import('./index-ByI-XErv.mjs')
   },
   {
     name: "events",
     path: "/events",
-    component: () => import('./events-Df17G1c_.mjs')
+    component: () => import('./events-Bd7_Wb9F.mjs')
   },
   {
     name: "settings",
     path: "/settings",
-    component: () => import('./settings-Bm4QSUOa.mjs')
+    component: () => import('./settings-BEtTr2j-.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {

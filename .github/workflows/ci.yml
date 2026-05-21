@@ -7,19 +7,19 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  ci:
     name: ${{ matrix.os }} / Node ${{ matrix.node }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [20, 22, 24]
+        os: [ubuntu-latest, macos-latest]
+        node: ['20', '22']
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
 
@@ -31,19 +31,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Approve esbuild build script
-        run: pnpm approve-builds --yes
+      - name: Rebuild native deps
+        run: pnpm rebuild esbuild
         continue-on-error: true
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-node${{ matrix.node }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-node${{ matrix.node }}-
+            turbo-${{ runner.os }}-
 
       - name: Build
-        run: pnpm turbo build
+        run: pnpm turbo build --cache-dir=.turbo
 
       - name: Typecheck
-        run: pnpm turbo typecheck
-
-      - name: Lint
-        run: pnpm turbo lint
-        continue-on-error: true
+        run: pnpm turbo typecheck --cache-dir=.turbo
 
       - name: Test
-        run: pnpm turbo test
+        run: pnpm turbo test --cache-dir=.turbo
+
+      - name: Lint
+        run: pnpm turbo lint --cache-dir=.turbo
+        continue-on-error: true

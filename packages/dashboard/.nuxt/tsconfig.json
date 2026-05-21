@@ -152,10 +152,10 @@
         "../../../node_modules/.pnpm/@nuxtjs+i18n@9.5.6_@vue+compiler-dom@3.5.34_eslint@10.4.0_jiti@2.7.0__magicast@0.5.3_ro_0f44e1fb50dd396ef0eb05b871047554/node_modules/@nuxtjs/i18n/dist/types"
       ],
       "#nuxt-i18n/logger": [
-        "./nuxt-i18n-logger"
+        "./nuxt-i18n-logger.mjs"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev"
+        "./manifest/meta/8dd7bd5c-6de9-491c-96fd-5080d00092ab.json"
       ],
       "#components": [
         "./components"
@@ -240,6 +240,6 @@
     "../../../node_modules/.pnpm/@nuxt+devtools@3.2.4_vite@7.3.3_@types+node@20.19.41_jiti@2.7.0_terser@5.47.1_yaml@2.9.0__vue@3.5.34_typescript@5.9.3_/node_modules/dist/runtime/server",
     "../../../node_modules/.pnpm/@nuxt+telemetry@2.8.0_@nuxt+kit@3.21.6_magicast@0.5.3_/node_modules/runtime/server",
     "../../../node_modules/.pnpm/@nuxt+telemetry@2.8.0_@nuxt+kit@3.21.6_magicast@0.5.3_/node_modules/dist/runtime/server",
-    "dev"
+    "../.output"
   ]
 }

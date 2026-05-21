@@ -3,6 +3,7 @@ export {}
 declare global {
   const abortNavigation: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/router').abortNavigation
   const addRouteMiddleware: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/router').addRouteMiddleware
+  const buildChartPath: typeof import('../../utils/chart').buildChartPath
   const callOnce: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/once').callOnce
   const cancelIdleCallback: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/compat/idle-callback').cancelIdleCallback
   const clearError: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/error').clearError
@@ -28,6 +29,11 @@ declare global {
   const definePayloadReviver: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/payload').definePayloadReviver
   const effect: typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue').effect
   const effectScope: typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue').effectScope
+  const fmtCost5: typeof import('../../utils/format').fmtCost5
+  const fmtCost: typeof import('../../utils/format').fmtCost
+  const fmtDateTime: typeof import('../../utils/format').fmtDateTime
+  const fmtRelTime: typeof import('../../utils/format').fmtRelTime
+  const fmtTokens: typeof import('../../utils/format').fmtTokens
   const getAppManifest: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/manifest').getAppManifest
   const getCurrentInstance: typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue').getCurrentInstance
   const getCurrentScope: typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue').getCurrentScope
@@ -123,7 +129,6 @@ declare global {
   const useModel: typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue').useModel
   const useNuxtApp: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/nuxt').useNuxtApp
   const useNuxtData: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/asyncData').useNuxtData
-  const useNuxtDevTools: typeof import('../../../../node_modules/.pnpm/@nuxt+devtools@3.2.4_vite@7.3.3_@types+node@20.19.41_jiti@2.7.0_terser@5.47.1_yaml@2.9.0__vue@3.5.34_typescript@5.9.3_/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools').useNuxtDevTools
   const usePreviewMode: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/preview').usePreviewMode
   const useRequestEvent: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/ssr').useRequestEvent
   const useRequestFetch: typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/ssr').useRequestFetch
@@ -215,6 +220,7 @@ declare module 'vue' {
   interface ComponentCustomProperties {
     readonly abortNavigation: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
+    readonly buildChartPath: UnwrapRef<typeof import('../../utils/chart')['buildChartPath']>
     readonly callOnce: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
     readonly clearError: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/error')['clearError']>
@@ -240,6 +246,11 @@ declare module 'vue' {
     readonly definePayloadReviver: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
     readonly effect: UnwrapRef<typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue')['effectScope']>
+    readonly fmtCost5: UnwrapRef<typeof import('../../utils/format')['fmtCost5']>
+    readonly fmtCost: UnwrapRef<typeof import('../../utils/format')['fmtCost']>
+    readonly fmtDateTime: UnwrapRef<typeof import('../../utils/format')['fmtDateTime']>
+    readonly fmtRelTime: UnwrapRef<typeof import('../../utils/format')['fmtRelTime']>
+    readonly fmtTokens: UnwrapRef<typeof import('../../utils/format')['fmtTokens']>
     readonly getAppManifest: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getCurrentInstance: UnwrapRef<typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue')['getCurrentScope']>
@@ -335,7 +346,6 @@ declare module 'vue' {
     readonly useModel: UnwrapRef<typeof import('../../../../node_modules/.pnpm/vue@3.5.34_typescript@5.9.3/node_modules/vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
-    readonly useNuxtDevTools: UnwrapRef<typeof import('../../../../node_modules/.pnpm/@nuxt+devtools@3.2.4_vite@7.3.3_@types+node@20.19.41_jiti@2.7.0_terser@5.47.1_yaml@2.9.0__vue@3.5.34_typescript@5.9.3_/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly useRequestEvent: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']>
     readonly useRequestFetch: UnwrapRef<typeof import('../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/composables/ssr')['useRequestFetch']>
