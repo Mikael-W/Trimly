@@ -1,0 +1,41 @@
+{
+  "name": "@trimly/dashboard",
+  "version": "0.1.0",
+  "description": "Trimly dashboard — Nuxt 3 local analytics",
+  "license": "Apache-2.0",
+  "private": true,
+  "author": {
+    "name": "Joys-Lab",
+    "email": "contact@joys-lab.com",
+    "url": "https://joys-lab.com"
+  },
+  "contributors": [
+    {
+      "name": "Mikael Wawrzyczny",
+      "email": "mikaelwaw@gmail.com",
+      "url": "https://github.com/Mikael-W"
+    }
+  ],
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 3737",
+    "preview": "nuxt preview",
+    "typecheck": "nuxt typecheck",
+    "lint": "biome check .",
+    "test": "vitest run --passWithNoTests",
+    "clean": "rm -rf .nuxt .output dist coverage"
+  },
+  "dependencies": {
+    "@nuxtjs/i18n": "^9.0.0",
+    "@trimly/core": "workspace:*",
+    "@unocss/nuxt": "^66.0.0",
+    "nuxt": "^3.16.0",
+    "unocss": "^66.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.57",
+    "happy-dom": "^20.9.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.3"
+  }
+}

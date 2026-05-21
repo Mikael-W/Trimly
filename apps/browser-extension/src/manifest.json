@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Trimly",
+  "version": "0.1.0",
+  "description": "See and trim your AI token spend on claude.ai",
+  "icons": {
+    "16": "src/icons/trimly.svg",
+    "48": "src/icons/trimly.svg",
+    "128": "src/icons/trimly.svg"
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "src/icons/trimly.svg",
+      "48": "src/icons/trimly.svg",
+      "128": "src/icons/trimly.svg"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["src/content/index.ts"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage"],
+  "host_permissions": ["https://claude.ai/*"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "trimly@trimly.dev",
+      "strict_min_version": "109.0"
+    }
+  }
+}

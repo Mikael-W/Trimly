@@ -1,0 +1,42 @@
+{
+  "name": "@trimly/browser-extension",
+  "version": "0.1.0",
+  "description": "Trimly browser extension — token tracking on claude.ai",
+  "license": "Apache-2.0",
+  "private": true,
+  "author": {
+    "name": "Joys-Lab",
+    "email": "contact@joys-lab.com",
+    "url": "https://joys-lab.com"
+  },
+  "contributors": [
+    {
+      "name": "Mikael Wawrzyczny",
+      "email": "mikaelwaw@gmail.com",
+      "url": "https://github.com/Mikael-W"
+    }
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check ./src",
+    "test": "vitest run --passWithNoTests",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@trimly/core": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.300",
+    "@types/node": "^20.17.57",
+    "@unocss/vite": "^66.0.0",
+    "@vitejs/plugin-vue": "^5.2.0",
+    "typescript": "^5.7.3",
+    "unocss": "^66.0.0",
+    "vite": "^6.3.0",
+    "vite-plugin-web-extension": "^4.0.0",
+    "vitest": "^3.2.3"
+  }
+}
