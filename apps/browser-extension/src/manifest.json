@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Trimly",
+  "name": "__MSG_ext_name__",
   "version": "0.1.0",
-  "description": "See and trim your AI token spend on claude.ai",
+  "description": "__MSG_ext_description__",
+  "default_locale": "en",
   "icons": {
     "16": "src/icons/trimly.svg",
     "48": "src/icons/trimly.svg",

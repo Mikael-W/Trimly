@@ -37921,12 +37921,17 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-ByI-XErv.mjs')
+    component: () => import('./index-CZna_iVq.mjs')
   },
   {
     name: "events",
     path: "/events",
     component: () => import('./events-Bd7_Wb9F.mjs')
+  },
+  {
+    name: "savings",
+    path: "/savings",
+    component: () => import('./savings-nupcJwdF.mjs')
   },
   {
     name: "settings",
@@ -38485,7 +38490,16 @@ const resource$1 = {
   "settings.theme": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Thème" } },
   "settings.theme.dark": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Sombre" } },
   "settings.theme.light": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Clair" } },
-  "settings.save": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Enregistrer" } }
+  "settings.save": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Enregistrer" } },
+  "savings.title": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Économies" } },
+  "savings.totalSaved": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Coût économisé" } },
+  "savings.tokensSaved": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Tokens économisés" } },
+  "savings.rate": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Taux d'optimisation" } },
+  "savings.timeline": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Économies journalières" } },
+  "savings.byModel": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Par modèle" } },
+  "savings.optimizations": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "optimisations" } },
+  "savings.noOptimizations": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Aucune optimisation enregistrée" } },
+  "savings.emptyDesc": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Utilisez le bouton 💡 dans l'extension pour optimiser vos prompts et voir vos économies ici." } }
 };
 const resource = {
   "app.title": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Trimly Dashboard" } },
@@ -38524,7 +38538,16 @@ const resource = {
   "settings.theme": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Theme" } },
   "settings.theme.dark": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Dark" } },
   "settings.theme.light": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Light" } },
-  "settings.save": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Save" } }
+  "settings.save": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Save" } },
+  "savings.title": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Savings" } },
+  "savings.totalSaved": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Cost saved" } },
+  "savings.tokensSaved": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Tokens saved" } },
+  "savings.rate": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Optimization rate" } },
+  "savings.timeline": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Daily savings" } },
+  "savings.byModel": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "By model" } },
+  "savings.optimizations": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "optimizations" } },
+  "savings.noOptimizations": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "No optimizations recorded yet" } },
+  "savings.emptyDesc": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Use the 💡 button in the extension to optimize your prompts and see your savings here." } }
 };
 const localeCodes = [
   "fr",
@@ -45827,7 +45850,7 @@ function requireServerRenderer_cjs_prod() {
 }
 var serverRenderer_cjs_prodExports = requireServerRenderer_cjs_prod();
 const layouts = {
-  default: vueExports.defineAsyncComponent(() => import('./default-DqmjJCuE.mjs').then((m) => m.default || m))
+  default: vueExports.defineAsyncComponent(() => import('./default-BYE4wB1F.mjs').then((m) => m.default || m))
 };
 const routeRulesMatcher = _routeRulesMatcher;
 const LayoutLoader = vueExports.defineComponent({

@@ -35,5 +35,14 @@
   "settings.theme": "Theme",
   "settings.theme.dark": "Dark",
   "settings.theme.light": "Light",
-  "settings.save": "Save"
+  "settings.save": "Save",
+  "savings.title": "Savings",
+  "savings.totalSaved": "Cost saved",
+  "savings.tokensSaved": "Tokens saved",
+  "savings.rate": "Optimization rate",
+  "savings.timeline": "Daily savings",
+  "savings.byModel": "By model",
+  "savings.optimizations": "optimizations",
+  "savings.noOptimizations": "No optimizations recorded yet",
+  "savings.emptyDesc": "Use the 💡 button in the extension to optimize your prompts and see your savings here."
 }

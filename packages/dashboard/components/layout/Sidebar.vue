@@ -4,6 +4,7 @@ const { t } = useI18n()
 const links = computed(() => [
   { to: '/', label: t('nav.overview'), icon: 'overview' },
   { to: '/events', label: t('nav.events'), icon: 'events' },
+  { to: '/savings', label: t('nav.savings'), icon: 'savings' },
   { to: '/settings', label: t('nav.settings'), icon: 'settings' },
 ])
 </script>
@@ -32,6 +33,10 @@ const links = computed(() => [
         </svg>
         <svg v-if="link.icon === 'events'" class="nav-icon" viewBox="0 0 16 16" fill="none">
           <path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg v-if="link.icon === 'savings'" class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1.5C4.41 1.5 1.5 4.41 1.5 8S4.41 14.5 8 14.5 14.5 11.59 14.5 8 11.59 1.5 8 1.5z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 5v1.5M8 9.5V11M6.5 7.25C6.5 6.56 7.17 6 8 6s1.5.56 1.5 1.25S8.83 8.5 8 8.5s-1.5.56-1.5 1.25S7.17 11 8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
         <svg v-if="link.icon === 'settings'" class="nav-icon" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>

@@ -1,7 +1,8 @@
-import { v as vueExports, u as useI18n, s as serverRenderer_cjs_prodExports } from './server.mjs';
-import { _ as _export_sfc } from './_plugin-vue_export-helper-1tPrXgE0.mjs';
+import { b as buildChartPath, _ as __nuxt_component_0 } from './chart-CwDLb6Vl.mjs';
 import { u as useFetch, f as fmtCost, d as fmtTokens } from './format-q5tNrZ12.mjs';
+import { v as vueExports, u as useI18n, s as serverRenderer_cjs_prodExports } from './server.mjs';
 import { u as useHead } from './v3-B0xo3clH.mjs';
+import { _ as _export_sfc } from './_plugin-vue_export-helper-1tPrXgE0.mjs';
 import '../nitro/nitro.mjs';
 import 'node:http';
 import 'node:https';
@@ -11,6 +12,7 @@ import 'node:fs';
 import 'node:path';
 import 'node:crypto';
 import 'node:url';
+import 'perfect-debounce';
 import '../routes/renderer.mjs';
 import 'vue-bundle-renderer/runtime';
 import 'vue/server-renderer';
@@ -20,39 +22,7 @@ import 'unhead/utils';
 import 'vue';
 import 'unhead/plugins';
 import 'node:stream';
-import 'perfect-debounce';
 
-const _sfc_main$1 = /* @__PURE__ */ vueExports.defineComponent({
-  __name: "BigNumber",
-  __ssrInlineRender: true,
-  props: {
-    value: {},
-    label: {},
-    sub: {},
-    accent: { type: Boolean },
-    positive: { type: Boolean }
-  },
-  setup(__props) {
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${serverRenderer_cjs_prodExports.ssrRenderAttrs(vueExports.mergeProps({
-        class: ["card", { "card--accent": __props.accent, "card--positive": __props.positive }]
-      }, _attrs))} data-v-eb4a3006><span class="card-label" data-v-eb4a3006>${serverRenderer_cjs_prodExports.ssrInterpolate(__props.label)}</span><span class="card-value" data-v-eb4a3006>${serverRenderer_cjs_prodExports.ssrInterpolate(__props.value)}</span>`);
-      if (__props.sub) {
-        _push(`<span class="card-sub" data-v-eb4a3006>${serverRenderer_cjs_prodExports.ssrInterpolate(__props.sub)}</span>`);
-      } else {
-        _push(`<!---->`);
-      }
-      _push(`</div>`);
-    };
-  }
-});
-const _sfc_setup$1 = _sfc_main$1.setup;
-_sfc_main$1.setup = (props, ctx) => {
-  const ssrContext = vueExports.useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/base/BigNumber.vue");
-  return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
-};
-const __nuxt_component_0 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-eb4a3006"]]);
 function useStats(period) {
   const days = vueExports.computed(() => {
     if (period.value === "today") return 1;
@@ -69,24 +39,6 @@ function useStats(period) {
     "$S1bf_NpWWH"
     /* nuxt-injected */
   );
-}
-function buildChartPath(pts, chartW, chartH) {
-  if (pts.length < 2) return null;
-  const maxV = Math.max(...pts.map((p) => p.cost), 1e-5);
-  const coords = pts.map((p, i) => ({
-    x: i / (pts.length - 1) * chartW,
-    y: chartH - p.cost / maxV * (chartH - 20) - 10
-  }));
-  let line = `M ${coords[0].x} ${coords[0].y}`;
-  for (let i = 1; i < coords.length; i++) {
-    const p = coords[i - 1];
-    const c = coords[i];
-    const cpx = (p.x + c.x) / 2;
-    line += ` C ${cpx} ${p.y} ${cpx} ${c.y} ${c.x} ${c.y}`;
-  }
-  const last = coords[coords.length - 1];
-  const area = `${line} L ${last.x} ${chartH} L 0 ${chartH} Z`;
-  return { line, area };
 }
 const CHART_W = 600;
 const CHART_H = 100;
@@ -191,4 +143,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-c623ab5f"]]);
 
 export { index as default };
-//# sourceMappingURL=index-ByI-XErv.mjs.map
+//# sourceMappingURL=index-CZna_iVq.mjs.map
