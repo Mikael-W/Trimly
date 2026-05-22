@@ -15,6 +15,25 @@
       "url": "https://github.com/Mikael-W"
     }
   ],
+  "homepage": "https://github.com/Mikael-W/Trimly#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mikael-W/Trimly.git",
+    "directory": "packages/core"
+  },
+  "bugs": "https://github.com/Mikael-W/Trimly/issues",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "tokens",
+    "token-counter",
+    "llm",
+    "cost",
+    "pricing",
+    "anthropic",
+    "openai",
+    "tokenizer"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -29,6 +48,13 @@
       "types": "./dist/browser.d.ts",
       "import": "./dist/browser.js"
     }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
     "build": "tsup",
