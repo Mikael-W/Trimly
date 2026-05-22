@@ -51,7 +51,7 @@ export function reducePrompt(text: string, analysis: PromptAnalysis): string {
         `// ... (${lines.length - 25} lignes supprimées)`,
         ...lines.slice(-5),
       ]
-      return '```' + lang + '\n' + kept.join('\n') + '```'
+      return `\`\`\`${lang}\n${kept.join('\n')}\`\`\``
     })
   }
 

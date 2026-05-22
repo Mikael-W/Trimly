@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-useHead({ title: t('savings.title') + ' — Trimly' })
+useHead({ title: `${t('savings.title')} — Trimly` })
 
 const period = ref<'7d' | '30d' | 'all'>('30d')
 const periods = ['7d', '30d', 'all'] as const
@@ -17,7 +17,11 @@ const CHART_W = 600
 const CHART_H = 80
 
 const chartPath = computed(() =>
-  buildChartPath((data.value?.timeline ?? []).map(d => ({ cost: d.costSaved })), CHART_W, CHART_H),
+  buildChartPath(
+    (data.value?.timeline ?? []).map((d) => ({ cost: d.costSaved })),
+    CHART_W,
+    CHART_H,
+  ),
 )
 
 const modelEntries = computed(() => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { countTokens } from '../../lib/tokenizer-browser.js'
 import { cleanFiller, detectFillerSavings } from '../../lib/cleanFiller-browser.js'
 import { estimateCost } from '../../lib/pricing-browser.js'
+import { countTokens } from '../../lib/tokenizer-browser.js'
 import type { claudeAiAdapter } from '../sites/claude-ai-adapter.js'
 
 const props = defineProps<{

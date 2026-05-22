@@ -15,7 +15,7 @@ export function formatCostShort(usd, currency = 'USD') {
 export function progressBar(pct, width = 10) {
   const filled = Math.round((pct / 100) * width)
   const empty = width - filled
-  return '█'.repeat(filled) + '░'.repeat(empty) + ` ${pct}%`
+  return `${'█'.repeat(filled) + '░'.repeat(empty)} ${pct}%`
 }
 
 export function sparkline(values) {

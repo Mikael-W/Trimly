@@ -16,29 +16,27 @@ type LibsqlClient = ReturnType<typeof createClient>
 
 function rowToEvent(row: Record<string, unknown>): TrimlyEvent {
   return {
-    id: String(row['id']),
-    session_id: String(row['session_id'] ?? ''),
-    timestamp: Number(row['timestamp']),
-    source: row['source'] as TrimlyEvent['source'],
-    provider: String(row['provider']),
-    model: String(row['model']),
-    tokens_input: Number(row['tokens_input'] ?? 0),
-    tokens_output: Number(row['tokens_output'] ?? 0),
-    tokens_cache_read: Number(row['tokens_cache_read'] ?? 0),
-    tokens_cache_write: Number(row['tokens_cache_write'] ?? 0),
-    tokens_saved_optim: Number(row['tokens_saved_optim'] ?? 0),
-    tokens_saved_shadow: Number(row['tokens_saved_shadow'] ?? 0),
-    cost_usd: Number(row['cost_usd'] ?? 0),
-    cost_saved_usd: Number(row['cost_saved_usd'] ?? 0),
-    cost_saved_shadow_usd: Number(row['cost_saved_shadow_usd'] ?? 0),
-    duration_ms: row['duration_ms'] != null ? Number(row['duration_ms']) : null,
-    status: row['status'] as TrimlyEvent['status'],
-    filler_detected: Boolean(row['filler_detected']),
-    strategies_applied: row['strategies_applied']
-      ? JSON.parse(String(row['strategies_applied']))
-      : [],
-    prompt_preview: row['prompt_preview'] != null ? String(row['prompt_preview']) : null,
-    tags: row['tags'] != null ? String(row['tags']) : null,
+    id: String(row.id),
+    session_id: String(row.session_id ?? ''),
+    timestamp: Number(row.timestamp),
+    source: row.source as TrimlyEvent['source'],
+    provider: String(row.provider),
+    model: String(row.model),
+    tokens_input: Number(row.tokens_input ?? 0),
+    tokens_output: Number(row.tokens_output ?? 0),
+    tokens_cache_read: Number(row.tokens_cache_read ?? 0),
+    tokens_cache_write: Number(row.tokens_cache_write ?? 0),
+    tokens_saved_optim: Number(row.tokens_saved_optim ?? 0),
+    tokens_saved_shadow: Number(row.tokens_saved_shadow ?? 0),
+    cost_usd: Number(row.cost_usd ?? 0),
+    cost_saved_usd: Number(row.cost_saved_usd ?? 0),
+    cost_saved_shadow_usd: Number(row.cost_saved_shadow_usd ?? 0),
+    duration_ms: row.duration_ms != null ? Number(row.duration_ms) : null,
+    status: row.status as TrimlyEvent['status'],
+    filler_detected: Boolean(row.filler_detected),
+    strategies_applied: row.strategies_applied ? JSON.parse(String(row.strategies_applied)) : [],
+    prompt_preview: row.prompt_preview != null ? String(row.prompt_preview) : null,
+    tags: row.tags != null ? String(row.tags) : null,
   }
 }
 
@@ -203,18 +201,15 @@ export class LibsqlStorage implements TrimlyStorage {
     const t = totals.rows[0] as Record<string, unknown> | undefined
 
     return {
-      totalRequests: Number(t?.['total_requests'] ?? 0),
-      totalTokensInput: Number(t?.['total_tokens_input'] ?? 0),
-      totalTokensOutput: Number(t?.['total_tokens_output'] ?? 0),
-      totalCostUsd: Number(t?.['total_cost_usd'] ?? 0),
-      totalSavedUsd: Number(t?.['total_saved_usd'] ?? 0),
+      totalRequests: Number(t?.total_requests ?? 0),
+      totalTokensInput: Number(t?.total_tokens_input ?? 0),
+      totalTokensOutput: Number(t?.total_tokens_output ?? 0),
+      totalCostUsd: Number(t?.total_cost_usd ?? 0),
+      totalSavedUsd: Number(t?.total_saved_usd ?? 0),
       byModel: Object.fromEntries(
         byModel.rows.map((r) => {
           const row = r as Record<string, unknown>
-          return [
-            String(row['model']),
-            { requests: Number(row['requests']), cost: Number(row['cost']) },
-          ]
+          return [String(row.model), { requests: Number(row.requests), cost: Number(row.cost) }]
         }),
       ),
     }
@@ -278,10 +273,10 @@ export class LibsqlStorage implements TrimlyStorage {
     return result.rows.map((r) => {
       const row = r as Record<string, unknown>
       return {
-        date: String(row['date']),
-        cost: Number(row['cost'] ?? 0),
-        saved: Number(row['saved'] ?? 0),
-        tokens: Number(row['tokens'] ?? 0),
+        date: String(row.date),
+        cost: Number(row.cost ?? 0),
+        saved: Number(row.saved ?? 0),
+        tokens: Number(row.tokens ?? 0),
       }
     })
   }
@@ -307,20 +302,20 @@ export class LibsqlStorage implements TrimlyStorage {
 
   async getRecentToolCalls(session_id: string, limit = 5): Promise<ToolCall[]> {
     const result = await this.exec(
-      `SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?`,
+      'SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?',
       [session_id, limit],
     )
     return result.rows.map((r) => {
       const row = r as Record<string, unknown>
       return {
-        id: String(row['id']),
-        session_id: String(row['session_id']),
-        event_id: row['event_id'] != null ? String(row['event_id']) : null,
-        tool_name: String(row['tool_name']),
-        target: row['target'] != null ? String(row['target']) : null,
-        tokens_used: Number(row['tokens_used'] ?? 0),
-        cost_usd: Number(row['cost_usd'] ?? 0),
-        timestamp: Number(row['timestamp']),
+        id: String(row.id),
+        session_id: String(row.session_id),
+        event_id: row.event_id != null ? String(row.event_id) : null,
+        tool_name: String(row.tool_name),
+        target: row.target != null ? String(row.target) : null,
+        tokens_used: Number(row.tokens_used ?? 0),
+        cost_usd: Number(row.cost_usd ?? 0),
+        timestamp: Number(row.timestamp),
       }
     })
   }

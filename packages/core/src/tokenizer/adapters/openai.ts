@@ -4,10 +4,12 @@ const _encodings = new Map<string, ReturnType<typeof getEncoding>>()
 
 function getEncoding_(model: string): ReturnType<typeof getEncoding> {
   const enc: TiktokenEncoding = model.startsWith('gpt-4o') ? 'o200k_base' : 'cl100k_base'
-  if (!_encodings.has(enc)) {
-    _encodings.set(enc, getEncoding(enc))
+  let cached = _encodings.get(enc)
+  if (!cached) {
+    cached = getEncoding(enc)
+    _encodings.set(enc, cached)
   }
-  return _encodings.get(enc)!
+  return cached
 }
 
 export function countTokensOpenAI(model: string, text: string): number {

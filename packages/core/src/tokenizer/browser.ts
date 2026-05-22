@@ -6,8 +6,6 @@ export function countTokensBrowser(provider: Provider, _model: string, text: str
   switch (provider) {
     case 'mistral':
       return countTokensMistral(text)
-    case 'anthropic':
-    case 'openai':
     default:
       return Math.ceil(text.length / 3.8)
   }

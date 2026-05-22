@@ -9,7 +9,7 @@ const sessionId = sessionFlag >= 0 ? args[sessionFlag + 1] : undefined
 async function main() {
   try {
     const pluginRoot =
-      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -18,7 +18,7 @@ async function main() {
     }
 
     const { createStorage, getDefaultDbPath, formatCost } = core
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     const [sessionStats, todayStats, monthStats] = await Promise.all([
@@ -35,7 +35,7 @@ async function main() {
     out.push('\n📊 Trimly stats\n')
 
     if (sessionStats) {
-      out.push(`Session courante:`)
+      out.push('Session courante:')
       out.push(`  Prompts:    ${sessionStats.count}`)
       out.push(
         `  Tokens:     ${sessionStats.tokensIn.toLocaleString()} in / ${sessionStats.tokensOut.toLocaleString()} out`,
@@ -56,7 +56,7 @@ async function main() {
     out.push(`  Saved:      ${formatCost(todayStats.totalSavedUsd, 'USD', 'en-US')}`)
     out.push('')
 
-    out.push(`Ce mois (30j):`)
+    out.push('Ce mois (30j):')
     out.push(`  Prompts:    ${monthStats.totalRequests}`)
     out.push(`  Tokens:     ${monthStats.totalTokensInput.toLocaleString()} in`)
     out.push(`  Cost:       ${formatCost(monthStats.totalCostUsd, 'USD', 'en-US')}`)

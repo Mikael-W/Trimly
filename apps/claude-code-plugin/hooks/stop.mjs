@@ -13,7 +13,7 @@ async function main() {
 
   try {
     const pluginRoot =
-      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -25,7 +25,7 @@ async function main() {
 
     const usage = await extractUsageFromTranscript(transcript_path)
 
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     const pending = await storage.queryEvents({ session_id, status: 'pending', limit: 1 })
@@ -60,7 +60,7 @@ async function main() {
 
     await storage.close()
   } catch (err) {
-    if (process.env['TRIMLY_DEBUG']) {
+    if (process.env.TRIMLY_DEBUG) {
       process.stderr.write(`[Trimly stop error] ${err}\n`)
     }
   }
@@ -87,9 +87,7 @@ async function extractUsageFromTranscript(transcriptPath) {
           cache_creation_input_tokens: usage.cache_creation_input_tokens ?? 0,
           duration_ms: null,
         }
-      } catch {
-        continue
-      }
+      } catch {}
     }
   } catch {}
 

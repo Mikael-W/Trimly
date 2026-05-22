@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getStats, exportJson } from '../storage/index.js'
+import { exportJson, getStats } from '../storage/index.js'
 
 const stats = ref<{
   todayCount: number

@@ -16,7 +16,8 @@ const points = computed(() => {
   const vals = props.values
   if (!vals || vals.length === 0) return ''
   const max = Math.max(...vals)
-  if (max === 0) return vals.map((_, i) => `${(i / (vals.length - 1)) * w.value},${h.value}`).join(' ')
+  if (max === 0)
+    return vals.map((_, i) => `${(i / (vals.length - 1)) * w.value},${h.value}`).join(' ')
 
   return vals
     .map((v, i) => {

@@ -23,7 +23,7 @@ export function renderDefault(data, config) {
   if (budget > 0) {
     const pct = computeBudgetPct(monthCost, budget)
     const eta = computeETA(monthCost, budget, daily)
-    const etaStr = eta !== null ? ` (ETA: ${eta === 999 ? '∞' : eta + 'd'})` : ''
+    const etaStr = eta !== null ? ` (ETA: ${eta === 999 ? '∞' : `${eta}d`})` : ''
     const costOfMonth = formatCost(monthCost, budgetCurrency)
     const budgetStr = formatCost(budget, budgetCurrency)
     line1 += `${c(budgetColor(pct), `💰 ${costOfMonth} / ${budgetStr}${etaStr}`)}`

@@ -37,12 +37,12 @@ async function wireHooks(): Promise<void> {
     settings = JSON.parse(await readFile(settingsPath, 'utf8'))
   } catch {}
 
-  if (settings['hooks']) {
+  if (settings.hooks) {
     console.log(kleur.yellow('  Hooks already configured in ~/.claude/settings.json, skipping.'))
     return
   }
 
-  settings['hooks'] = buildHooksBlock()
+  settings.hooks = buildHooksBlock()
   await writeFile(settingsPath, JSON.stringify(settings, null, 2))
   console.log(kleur.green('✅ Hooks wired in ~/.claude/settings.json'))
 }

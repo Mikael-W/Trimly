@@ -1,13 +1,12 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-useHead({ title: t('events.title') + ' — Trimly' })
+useHead({ title: `${t('events.title')} — Trimly` })
 
 const source = ref<string>('all')
 const sources = ['all', 'claude-code', 'browser-extension'] as const
 
 const { data: events, pending } = useEvents(source)
-
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const days = query['days'] ? Number(query['days']) : 30
+  const days = query.days ? Number(query.days) : 30
 
   const storage = await getStorage()
   const events = await storage.queryEvents({ days, limit: 50_000 })
@@ -18,10 +18,14 @@ export default defineEventHandler(async (event) => {
     totalTokensSaved += e.tokens_saved_optim ?? 0
 
     if ((e.tokens_saved_optim ?? 0) > 0) {
-      byModel[e.model] ??= { tokensSaved: 0, costSaved: 0, events: 0 }
-      byModel[e.model]!.tokensSaved += e.tokens_saved_optim ?? 0
-      byModel[e.model]!.costSaved += e.cost_saved_usd ?? 0
-      byModel[e.model]!.events++
+      let m = byModel[e.model]
+      if (!m) {
+        m = { tokensSaved: 0, costSaved: 0, events: 0 }
+        byModel[e.model] = m
+      }
+      m.tokensSaved += e.tokens_saved_optim ?? 0
+      m.costSaved += e.cost_saved_usd ?? 0
+      m.events++
 
       const d = new Date(e.timestamp).toISOString().slice(0, 10)
       const entry = byDay.get(d) ?? { date: d, costSaved: 0 }

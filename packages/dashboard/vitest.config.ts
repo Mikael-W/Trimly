@@ -1,5 +1,5 @@
+import { createRequire } from 'node:module'
 import { defineConfig } from 'vitest/config'
-import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
 

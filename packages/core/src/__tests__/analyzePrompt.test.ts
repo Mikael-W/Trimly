@@ -4,7 +4,7 @@ import { analyzePrompt } from '../strategies/analyzePrompt.js'
 describe('Given the analyzePrompt strategy', () => {
   describe('When the prompt contains large code blocks', () => {
     test('Then it flags code as heavy reason and reports codeTokens', () => {
-      const code = '```typescript\n' + 'const x = 1\n'.repeat(80) + '```'
+      const code = `\`\`\`typescript\n${'const x = 1\n'.repeat(80)}\`\`\``
       const prompt = `Fix this: ${code}`
       const result = analyzePrompt(prompt, 400)
       expect(result.heavyReason).toBe('code')

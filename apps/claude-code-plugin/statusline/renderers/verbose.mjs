@@ -23,7 +23,7 @@ export function renderVerbose(data, config, recentTools = []) {
   if (budget > 0) {
     const pct = computeBudgetPct(monthCost, budget)
     const eta = computeETA(monthCost, budget, daily)
-    const etaStr = eta !== null ? ` · ETA: ${eta === 999 ? '∞' : eta + 'd'}` : ''
+    const etaStr = eta !== null ? ` · ETA: ${eta === 999 ? '∞' : `${eta}d`}` : ''
     const bar = progressBar(pct, 10)
     line1 = `${c(budgetColor(pct), `💰 ${formatCost(monthCost, budgetCurrency)} / ${formatCost(budget, budgetCurrency)} (${bar}${etaStr})`)}`
   } else {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { fmtCost, fmtCost5, fmtTokens, fmtRelTime } from '../../utils/format'
+import { fmtCost, fmtCost5, fmtRelTime, fmtTokens } from '../../utils/format'
 
 const NOW = new Date('2025-06-01T12:00:00Z').getTime()
 

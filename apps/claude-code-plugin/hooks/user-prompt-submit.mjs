@@ -59,7 +59,7 @@ async function main() {
 
   try {
     const pluginRoot =
-      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -76,7 +76,7 @@ async function main() {
       createStorage,
       getDefaultDbPath,
     } = core
-    const model = process.env['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-6'
+    const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
     const provider = 'anthropic'
     const config = await loadConfig()
 
@@ -106,7 +106,7 @@ async function main() {
     })
     const costUsd = computeCost(provider, model, { input_tokens: tokensInput, output_tokens: 0 })
 
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
     const costSavedUsd =
       fillerResult.tokensSaved > 0
@@ -169,7 +169,7 @@ async function main() {
       )
     }
   } catch (err) {
-    if (process.env['TRIMLY_DEBUG']) {
+    if (process.env.TRIMLY_DEBUG) {
       process.stderr.write(`[Trimly error] ${err}\n`)
     }
   }

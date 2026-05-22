@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
-import App from './ui/App.vue'
 import { claudeAiAdapter } from './sites/claude-ai-adapter.js'
+import App from './ui/App.vue'
 
 function mount() {
   const host = document.createElement('div')

@@ -3,7 +3,11 @@ chrome.runtime.onInstalled.addListener(() => {
 })
 
 chrome.runtime.onMessage.addListener(
-  (message: { type: string }, _sender: chrome.runtime.MessageSender, sendResponse: (r: unknown) => void) => {
+  (
+    message: { type: string },
+    _sender: chrome.runtime.MessageSender,
+    sendResponse: (r: unknown) => void,
+  ) => {
     if (message.type === 'PING') sendResponse({ type: 'PONG' })
   },
 )

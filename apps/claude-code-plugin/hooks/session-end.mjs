@@ -12,7 +12,7 @@ async function main() {
 
   try {
     const pluginRoot =
-      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -21,7 +21,7 @@ async function main() {
     }
 
     const { createStorage, getDefaultDbPath } = core
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     const events = await storage.queryEvents({ session_id, status: 'completed' })
@@ -42,14 +42,11 @@ async function main() {
     if (config.summary_on_session_end && events.length > 0) {
       const mins = Math.round((Date.now() - (events[0]?.timestamp ?? Date.now())) / 60000)
       process.stdout.write(
-        `\n📊 Trimly session summary\n` +
-          `   Prompts:  ${events.length}\n` +
-          `   Tokens:   ${totalTokensInput.toLocaleString()} in / ${totalTokensOutput.toLocaleString()} out\n` +
-          `   Cost:     $${totalCostUsd.toFixed(4)}\n\n`,
+        `\n📊 Trimly session summary\n   Prompts:  ${events.length}\n   Tokens:   ${totalTokensInput.toLocaleString()} in / ${totalTokensOutput.toLocaleString()} out\n   Cost:     $${totalCostUsd.toFixed(4)}\n\n`,
       )
     }
   } catch (err) {
-    if (process.env['TRIMLY_DEBUG']) process.stderr.write(`[Trimly session-end] ${err}\n`)
+    if (process.env.TRIMLY_DEBUG) process.stderr.write(`[Trimly session-end] ${err}\n`)
   }
 
   process.exit(0)

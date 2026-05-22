@@ -5,8 +5,8 @@ let _storage: TrimlyStorage | null = null
 
 export async function getStorage(): Promise<TrimlyStorage> {
   if (_storage) return _storage
-  const path = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
-  if (!process.env['TRIMLY_DB_PATH']) await ensureTrimlyDir()
+  const path = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
+  if (!process.env.TRIMLY_DB_PATH) await ensureTrimlyDir()
   _storage = await createStorage(path)
   return _storage
 }

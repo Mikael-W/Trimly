@@ -13,7 +13,7 @@ async function main() {
 
   try {
     const pluginRoot =
-      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -22,7 +22,7 @@ async function main() {
     }
 
     const { computeCost, createStorage, getDefaultDbPath } = core
-    const model = process.env['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-6'
+    const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
     const provider = 'anthropic'
 
     const usage = tool_response?.usage ?? {}
@@ -37,7 +37,7 @@ async function main() {
 
     const target = extractTarget(tool_name, tool_input)
 
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     await storage.recordToolCall({
@@ -53,7 +53,7 @@ async function main() {
 
     await storage.close()
   } catch (err) {
-    if (process.env['TRIMLY_DEBUG']) {
+    if (process.env.TRIMLY_DEBUG) {
       process.stderr.write(`[Trimly post-tool-use error] ${err}\n`)
     }
   }

@@ -7,7 +7,7 @@ export async function getStorage() {
   await mkdir(dir, { recursive: true })
   const dbPath = join(dir, 'events.db')
 
-  const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? new URL('../..', import.meta.url).pathname
+  const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT ?? new URL('../..', import.meta.url).pathname
 
   try {
     const { createStorage } = await import(
@@ -21,7 +21,7 @@ export async function getStorage() {
 }
 
 export async function getCore() {
-  const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? new URL('../..', import.meta.url).pathname
+  const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT ?? new URL('../..', import.meta.url).pathname
 
   try {
     return await import(join(pluginRoot, 'node_modules/@trimly/core/dist/index.js'))

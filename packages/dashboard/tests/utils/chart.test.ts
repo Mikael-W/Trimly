@@ -48,7 +48,7 @@ describe('Given buildChartPath', () => {
 
   describe('When called with many points', () => {
     test('Then the line contains one C command per segment', () => {
-      const pts = [1, 2, 3, 4, 5].map(cost => ({ cost }))
+      const pts = [1, 2, 3, 4, 5].map((cost) => ({ cost }))
       const result = buildChartPath(pts, 600, 100)
       const segments = result?.line.split(' C ').length ?? 0
       expect(segments).toBe(pts.length)

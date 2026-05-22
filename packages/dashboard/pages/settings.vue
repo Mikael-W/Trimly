@@ -2,10 +2,12 @@
 const { t, locale, locales, setLocale } = useI18n()
 const { theme, apply: applyTheme } = useTheme()
 
-useHead({ title: t('settings.title') + ' — Trimly' })
+useHead({ title: `${t('settings.title')} — Trimly` })
 
 const currency = ref<'USD' | 'EUR'>('USD')
-const dbPath = ref(typeof window !== 'undefined' ? (localStorage.getItem('trimly.dbPath') ?? '') : '')
+const dbPath = ref(
+  typeof window !== 'undefined' ? (localStorage.getItem('trimly.dbPath') ?? '') : '',
+)
 const saved = ref(false)
 
 function save() {
@@ -14,7 +16,9 @@ function save() {
     localStorage.setItem('trimly.dbPath', dbPath.value)
   }
   saved.value = true
-  setTimeout(() => { saved.value = false }, 1800)
+  setTimeout(() => {
+    saved.value = false
+  }, 1800)
 }
 
 onMounted(() => {

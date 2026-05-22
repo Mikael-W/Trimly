@@ -12,7 +12,7 @@ async function main() {
 
   try {
     const pluginRoot =
-      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -21,7 +21,7 @@ async function main() {
     }
 
     const { createStorage, getDefaultDbPath } = core
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     await storage.recordEvent({
@@ -30,7 +30,7 @@ async function main() {
       timestamp: Date.now(),
       source: 'claude-code',
       provider: 'anthropic',
-      model: process.env['ANTHROPIC_MODEL'] ?? 'unknown',
+      model: process.env.ANTHROPIC_MODEL ?? 'unknown',
       tokens_input: 0,
       tokens_output: 0,
       cost_usd: 0,
@@ -41,7 +41,7 @@ async function main() {
 
     await storage.close()
   } catch (err) {
-    if (process.env['TRIMLY_DEBUG']) process.stderr.write(`[Trimly pre-compact] ${err}\n`)
+    if (process.env.TRIMLY_DEBUG) process.stderr.write(`[Trimly pre-compact] ${err}\n`)
   }
 
   process.exit(0)

@@ -25,7 +25,7 @@ async function main() {
   const input = await readStdinWithTimeout(200)
 
   const config = await loadConfig()
-  const dbPath = process.env['TRIMLY_DB_PATH'] ?? config.storage?.path ?? DEFAULT_DB_PATH
+  const dbPath = process.env.TRIMLY_DB_PATH ?? config.storage?.path ?? DEFAULT_DB_PATH
 
   const data = await getHistoricalData(dbPath)
 
@@ -46,7 +46,7 @@ async function main() {
   }
 
   if (output) {
-    process.stdout.write(output + '\n')
+    process.stdout.write(`${output}\n`)
   }
 
   process.exit(0)
@@ -62,7 +62,7 @@ async function getRecentTools(sessionId, dbPath) {
     const db = new DatabaseSync(dbPath, { open: false })
     db.open({ readOnly: true })
     const rows = db
-      .prepare(`SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT 5`)
+      .prepare('SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT 5')
       .all(sessionId)
     db.close()
     return rows

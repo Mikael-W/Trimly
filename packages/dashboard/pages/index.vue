@@ -3,7 +3,7 @@ import type { StatsResult } from '@trimly/core'
 
 const { t } = useI18n()
 
-useHead({ title: t('overview.title') + ' — Trimly' })
+useHead({ title: `${t('overview.title')} — Trimly` })
 
 const period = ref<'today' | '7d' | '30d' | 'all'>('30d')
 const periods = ['today', '7d', '30d', 'all'] as const
@@ -11,19 +11,23 @@ const periods = ['today', '7d', '30d', 'all'] as const
 const { data: stats } = useStats(period)
 const { data: timeline } = useFetch<{ date: string; cost: number }[]>('/api/timeline', {
   query: computed(() => ({
-    days: period.value === 'all' ? 365 : period.value === 'today' ? 1 : period.value === '7d' ? 7 : 30,
+    days:
+      period.value === 'all' ? 365 : period.value === 'today' ? 1 : period.value === '7d' ? 7 : 30,
   })),
   watch: [period],
 })
 
-const s = computed<StatsResult>(() => stats.value ?? {
-  totalRequests: 0,
-  totalTokensInput: 0,
-  totalTokensOutput: 0,
-  totalCostUsd: 0,
-  totalSavedUsd: 0,
-  byModel: {},
-})
+const s = computed<StatsResult>(
+  () =>
+    stats.value ?? {
+      totalRequests: 0,
+      totalTokensInput: 0,
+      totalTokensOutput: 0,
+      totalCostUsd: 0,
+      totalSavedUsd: 0,
+      byModel: {},
+    },
+)
 
 const CHART_W = 600
 const CHART_H = 100
@@ -44,10 +48,7 @@ const modelEntries = computed(() => {
     }))
 })
 
-const sparklineValues = computed(() =>
-  (timeline.value ?? []).slice(-7).map((d) => d.cost),
-)
-
+const sparklineValues = computed(() => (timeline.value ?? []).slice(-7).map((d) => d.cost))
 </script>
 
 <template>

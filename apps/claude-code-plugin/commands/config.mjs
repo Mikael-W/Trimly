@@ -32,10 +32,10 @@ async function main() {
     await writeFile(CONFIG_PATH, JSON.stringify(config, null, 2))
   }
 
-  const editor = process.env['EDITOR'] ?? process.env['VISUAL'] ?? 'nano'
+  const editor = process.env.EDITOR ?? process.env.VISUAL ?? 'nano'
 
   if (process.argv.includes('--show')) {
-    process.stdout.write(JSON.stringify(config, null, 2) + '\n')
+    process.stdout.write(`${JSON.stringify(config, null, 2)}\n`)
     return
   }
 

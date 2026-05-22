@@ -61,4 +61,4 @@ CREATE TABLE IF NOT EXISTS meta (
 );
 `
 
-export const ENABLE_WAL_SQL = `PRAGMA journal_mode=WAL;`
+export const ENABLE_WAL_SQL = 'PRAGMA journal_mode=WAL;'
