@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
 
 async function main() {
@@ -11,7 +11,8 @@ async function main() {
   if (!session_id) process.exit(0)
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))

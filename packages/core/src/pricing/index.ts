@@ -12,15 +12,10 @@ type PricingData = Record<string, Record<string, ModelPricing>>
 
 const PRICING = modelsData as PricingData
 
-/** Cost per million tokens (USD) → cost for N tokens */
 function perMillion(rate: number, tokens: number): number {
   return (rate / 1_000_000) * tokens
 }
 
-/**
- * Compute total cost in USD for a given usage.
- * Returns 0 for unknown provider/model (avoids crashing).
- */
 export function computeCost(provider: Provider, model: string, usage: TokenUsage): number {
   const providerPricing = PRICING[provider]
   if (!providerPricing) return 0
@@ -36,7 +31,6 @@ export function computeCost(provider: Provider, model: string, usage: TokenUsage
   )
 }
 
-/** Format a cost value as a locale-aware currency string. */
 export function formatCost(cost: number, currency: 'USD' | 'EUR', locale = 'en-US'): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',

@@ -1,6 +1,12 @@
-import { createClient, type InValue } from '@libsql/client'
+import { type InValue, createClient } from '@libsql/client'
 import { v4 as uuidv4 } from 'uuid'
-import type { QueryEventsOptions, StatsResult, TrimlyEvent, TrimlyEventInsert, TrimlySession } from '../../types/events.js'
+import type {
+  QueryEventsOptions,
+  StatsResult,
+  TrimlyEvent,
+  TrimlyEventInsert,
+  TrimlySession,
+} from '../../types/events.js'
 import type { ToolCall, ToolCallInsert } from '../../types/tool-calls.js'
 import type { DailyStats } from '../../utils/budget.js'
 import { CREATE_TABLES_SQL, ENABLE_WAL_SQL } from '../schema.js'
@@ -59,7 +65,10 @@ export class LibsqlStorage implements TrimlyStorage {
     this.client.close()
   }
 
-  private async exec(sql: string, args: unknown[] = []): Promise<ReturnType<LibsqlClient['execute']>> {
+  private async exec(
+    sql: string,
+    args: unknown[] = [],
+  ): Promise<ReturnType<LibsqlClient['execute']>> {
     return this.client.execute({ sql, args: args.map(toInValue) })
   }
 
@@ -282,7 +291,16 @@ export class LibsqlStorage implements TrimlyStorage {
     await this.exec(
       `INSERT INTO tool_calls (id, session_id, event_id, tool_name, target, tokens_used, cost_usd, timestamp)
       VALUES (?,?,?,?,?,?,?,?)`,
-      [id, call.session_id, call.event_id ?? null, call.tool_name, call.target ?? null, call.tokens_used, call.cost_usd, call.timestamp],
+      [
+        id,
+        call.session_id,
+        call.event_id ?? null,
+        call.tool_name,
+        call.target ?? null,
+        call.tokens_used,
+        call.cost_usd,
+        call.timestamp,
+      ],
     )
     return id
   }

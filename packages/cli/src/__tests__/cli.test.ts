@@ -1,8 +1,8 @@
-import { describe, test, expect } from 'vitest'
-import { execa } from 'execa'
 import { mkdtemp, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { execa } from 'execa'
+import { describe, expect, test } from 'vitest'
 
 const CLI = join(import.meta.dirname, '../../bin/trimly.js')
 
@@ -58,12 +58,30 @@ describe('Given the trimly CLI binary', () => {
       const jsonPath = join(tmpDir, 'export.json')
 
       const events = [
-        { id: 'b1', timestamp: Date.now(), site: 'claude.ai', model: 'claude-sonnet-4-6', tokens_input: 100, cost_input_usd: 0.0003 },
-        { id: 'b2', timestamp: Date.now() - 1000, site: 'claude.ai', model: 'claude-sonnet-4-6', tokens_input: 200, cost_input_usd: 0.0006 },
+        {
+          id: 'b1',
+          timestamp: Date.now(),
+          site: 'claude.ai',
+          model: 'claude-sonnet-4-6',
+          tokens_input: 100,
+          cost_input_usd: 0.0003,
+        },
+        {
+          id: 'b2',
+          timestamp: Date.now() - 1000,
+          site: 'claude.ai',
+          model: 'claude-sonnet-4-6',
+          tokens_input: 200,
+          cost_input_usd: 0.0006,
+        },
       ]
       await writeFile(jsonPath, JSON.stringify(events))
 
-      const { stdout, exitCode } = await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], { reject: false })
+      const { stdout, exitCode } = await execa(
+        'node',
+        [CLI, 'import-browser', jsonPath, '--db', dbPath],
+        { reject: false },
+      )
       expect(exitCode).toBe(0)
       expect(stdout).toContain('✅')
       expect(stdout).toContain('2')
@@ -77,12 +95,21 @@ describe('Given the trimly CLI binary', () => {
       const jsonPath = join(tmpDir, 'export.json')
 
       const events = [
-        { id: 'dup1', timestamp: Date.now(), site: 'claude.ai', model: 'claude-sonnet-4-6', tokens_input: 50, cost_input_usd: 0.0001 },
+        {
+          id: 'dup1',
+          timestamp: Date.now(),
+          site: 'claude.ai',
+          model: 'claude-sonnet-4-6',
+          tokens_input: 50,
+          cost_input_usd: 0.0001,
+        },
       ]
       await writeFile(jsonPath, JSON.stringify(events))
 
       await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], { reject: false })
-      const { stdout } = await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], { reject: false })
+      const { stdout } = await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], {
+        reject: false,
+      })
       expect(stdout).toContain('0')
       expect(stdout).toContain('skipped')
     })

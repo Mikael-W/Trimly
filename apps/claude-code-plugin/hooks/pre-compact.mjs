@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
-import { homedir } from 'node:os'
 import { randomUUID } from 'node:crypto'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
 
 async function main() {
@@ -11,7 +11,8 @@ async function main() {
   const { session_id = '' } = input
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -23,7 +24,6 @@ async function main() {
     const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
-    // Log a compaction event
     await storage.recordEvent({
       id: randomUUID(),
       session_id: session_id || 'unknown',

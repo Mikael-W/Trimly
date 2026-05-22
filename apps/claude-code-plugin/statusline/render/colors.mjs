@@ -1,4 +1,3 @@
-// ANSI color helpers — used by all renderers
 export const RESET = '\x1b[0m'
 export const BOLD = '\x1b[1m'
 export const DIM = '\x1b[2m'
@@ -13,7 +12,6 @@ export const BRIGHT_GREEN = '\x1b[92m'
 export const BRIGHT_YELLOW = '\x1b[93m'
 export const BRIGHT_RED = '\x1b[91m'
 
-/** Pick a color based on budget usage percentage */
 export function budgetColor(pct) {
   if (pct >= 100) return BRIGHT_RED
   if (pct >= 80) return BRIGHT_YELLOW
@@ -21,7 +19,6 @@ export function budgetColor(pct) {
   return BRIGHT_GREEN
 }
 
-/** Pick a color based on filler percentage */
 export function fillerColor(pct) {
   if (pct >= 40) return BRIGHT_RED
   if (pct >= 25) return YELLOW

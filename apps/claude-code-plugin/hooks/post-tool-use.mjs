@@ -1,11 +1,7 @@
 #!/usr/bin/env node
-/**
- * PostToolUse hook — records each tool call with its token cost.
- * Used by the verbose status line for cost-per-edit display.
- */
 import { randomUUID } from 'node:crypto'
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
 
 async function main() {
@@ -16,7 +12,8 @@ async function main() {
   if (!session_id || !tool_name) process.exit(0)
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -28,17 +25,16 @@ async function main() {
     const model = process.env['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-6'
     const provider = 'anthropic'
 
-    // Extract token usage from tool response if present
     const usage = tool_response?.usage ?? {}
     const tokensUsed = (usage.input_tokens ?? 0) + (usage.output_tokens ?? 0)
-    const costUsd = tokensUsed > 0
-      ? computeCost(provider, model, {
-          input_tokens: usage.input_tokens ?? 0,
-          output_tokens: usage.output_tokens ?? 0,
-        })
-      : 0
+    const costUsd =
+      tokensUsed > 0
+        ? computeCost(provider, model, {
+            input_tokens: usage.input_tokens ?? 0,
+            output_tokens: usage.output_tokens ?? 0,
+          })
+        : 0
 
-    // Extract meaningful target from tool input
     const target = extractTarget(tool_name, tool_input)
 
     const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()

@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
+import type { TrimlyEventInsert } from '@trimly/core'
 import kleur from 'kleur'
 import { openStorage } from '../utils/findStorage.js'
-import type { TrimlyEventInsert } from '@trimly/core'
 
 interface BrowserEvent {
   id: string
@@ -19,7 +19,10 @@ interface ImportOptions {
   db?: string
 }
 
-export async function cmdImportBrowser(filePath: string, options: ImportOptions = {}): Promise<void> {
+export async function cmdImportBrowser(
+  filePath: string,
+  options: ImportOptions = {},
+): Promise<void> {
   const raw = await readFile(filePath, 'utf8')
   const browserEvents: BrowserEvent[] = JSON.parse(raw)
 

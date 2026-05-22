@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { createInterface } from 'node:readline'
 
 const args = process.argv.slice(2)
@@ -16,7 +16,8 @@ async function confirm(question) {
 }
 
 async function main() {
-  const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+  const pluginRoot =
+    process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
   let core
   try {
     core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -28,7 +29,6 @@ async function main() {
   const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
   const storage = await createStorage(dbPath)
 
-  // For MVP, just delete all events
   const ok = await confirm('⚠️  Supprimer tous les events Trimly? (y/N) ')
 
   if (!ok) {
@@ -37,14 +37,11 @@ async function main() {
     return
   }
 
-  // Direct SQL via internal client — workaround until we expose a clear() method
   // @ts-ignore
   if (storage.client) {
-    // LibsqlStorage
     await storage.client.execute('DELETE FROM events')
     await storage.client.execute('DELETE FROM sessions')
   } else if (storage.db) {
-    // NodeSqliteStorage
     storage.db.exec('DELETE FROM events; DELETE FROM sessions;')
   }
 

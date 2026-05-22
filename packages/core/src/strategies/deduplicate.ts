@@ -1,4 +1,3 @@
-/** Remove duplicate sentences within a text block. */
 export function deduplicate(text: string): string {
   if (!text) return text
 

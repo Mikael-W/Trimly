@@ -4,7 +4,12 @@ import { ES_FILLER_PATTERNS } from './patterns/es.js'
 import { FR_FILLER_PATTERNS } from './patterns/fr.js'
 import { IT_FILLER_PATTERNS } from './patterns/it.js'
 import { PT_FILLER_PATTERNS } from './patterns/pt.js'
-import type { CleanFillerOptions, CleanFillerResult, FillerPattern, SupportedLanguage } from './types.js'
+import type {
+  CleanFillerOptions,
+  CleanFillerResult,
+  FillerPattern,
+  SupportedLanguage,
+} from './types.js'
 
 const PATTERNS_BY_LANG: Record<SupportedLanguage, FillerPattern[]> = {
   fr: FR_FILLER_PATTERNS,
@@ -43,10 +48,6 @@ function normalizeWhitespace(text: string): string {
     .trim()
 }
 
-/**
- * Detect or remove filler words from a text.
- * Does NOT modify the text when mode='detect' (default for plugin).
- */
 export function cleanFiller(text: string, options: CleanFillerOptions = {}): CleanFillerResult {
   if (!text) {
     return { text, applied: false, tokensSaved: 0, patternsMatched: [] }
@@ -63,11 +64,13 @@ export function cleanFiller(text: string, options: CleanFillerOptions = {}): Cle
   const placeholders = new Map<string, string>()
   let guarded = text
 
-  // Protect preserved strings
   preserve.forEach((word, i) => {
     const placeholder = `__TRIMLY_PRESERVE_${i}__`
     placeholders.set(placeholder, word)
-    guarded = guarded.replace(new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), placeholder)
+    guarded = guarded.replace(
+      new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+      placeholder,
+    )
   })
 
   const patternsMatched: string[] = []
@@ -79,7 +82,6 @@ export function cleanFiller(text: string, options: CleanFillerOptions = {}): Cle
     if (result !== before) patternsMatched.push(p.id)
   }
 
-  // Restore preserved strings
   for (const [placeholder, original] of placeholders) {
     result = result.replace(new RegExp(placeholder, 'g'), original)
   }

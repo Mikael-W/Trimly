@@ -1,8 +1,3 @@
-/**
- * Budget tracking: ETA, percentage, trend vs yesterday.
- * All pure computation — no I/O.
- */
-
 export function computeETA(monthCost, budgetAmount, daily) {
   if (!budgetAmount || budgetAmount <= 0) return null
   const remaining = budgetAmount - monthCost
@@ -24,7 +19,6 @@ function getDailyAverage(daily, days) {
   return slice.reduce((s, d) => s + d.cost, 0) / slice.length
 }
 
-/** Returns +X% or -X% vs yesterday, or null if not enough data */
 export function computeTrend(daily) {
   if (!daily || daily.length < 2) return null
   const today = daily[0]?.cost ?? 0

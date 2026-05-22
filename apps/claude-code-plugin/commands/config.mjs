@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
-import { homedir } from 'node:os'
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 
 const CONFIG_PATH = join(homedir(), '.trimly', 'config.json')
 
@@ -39,7 +39,6 @@ async function main() {
     return
   }
 
-  // Open in editor
   const child = spawn(editor, [CONFIG_PATH], { stdio: 'inherit' })
   child.on('exit', () => process.exit(0))
 }

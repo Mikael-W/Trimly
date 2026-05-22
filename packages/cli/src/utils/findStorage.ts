@@ -1,4 +1,4 @@
-import { getDefaultDbPath, ensureTrimlyDir, createStorage, resolveDbPath } from '@trimly/core'
+import { createStorage, ensureTrimlyDir, getDefaultDbPath, resolveDbPath } from '@trimly/core'
 import type { TrimlyStorage } from '@trimly/core'
 
 export async function openStorage(dbPath?: string): Promise<TrimlyStorage> {

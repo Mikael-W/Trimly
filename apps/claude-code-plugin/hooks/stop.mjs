@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
 
 async function main() {
@@ -12,7 +12,8 @@ async function main() {
   if (!session_id) process.exit(0)
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -22,13 +23,11 @@ async function main() {
 
     const { computeCost, createStorage, getDefaultDbPath } = core
 
-    // Parse transcript to get real usage
     const usage = await extractUsageFromTranscript(transcript_path)
 
     const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
-    // Find the pending event for this session
     const pending = await storage.queryEvents({ session_id, status: 'pending', limit: 1 })
 
     if (pending.length > 0) {
@@ -43,9 +42,10 @@ async function main() {
         cache_creation_input_tokens: usage.cache_creation_input_tokens,
       })
 
-      const totalInput = (usage.input_tokens ?? 0)
-        + (usage.cache_read_input_tokens ?? 0)
-        + (usage.cache_creation_input_tokens ?? 0)
+      const totalInput =
+        (usage.input_tokens ?? 0) +
+        (usage.cache_read_input_tokens ?? 0) +
+        (usage.cache_creation_input_tokens ?? 0)
 
       await storage.updateEvent(event.id, {
         tokens_input: totalInput,
@@ -75,11 +75,9 @@ async function extractUsageFromTranscript(transcriptPath) {
     const raw = await readFile(transcriptPath, 'utf8')
     const lines = raw.trim().split('\n').filter(Boolean)
 
-    // Find the last assistant message with usage
     for (let i = lines.length - 1; i >= 0; i--) {
       try {
         const msg = JSON.parse(lines[i])
-        // Claude Code format: { message: { usage: {...} }, ... }
         const usage = msg.message?.usage ?? msg.usage
         if (!usage) continue
         return {
@@ -93,9 +91,7 @@ async function extractUsageFromTranscript(transcriptPath) {
         continue
       }
     }
-  } catch {
-    // transcript not readable
-  }
+  } catch {}
 
   return defaultUsage()
 }

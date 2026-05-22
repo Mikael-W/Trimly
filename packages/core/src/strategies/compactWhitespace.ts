@@ -1,4 +1,3 @@
-/** Normalize whitespace while preserving code block content. */
 export function compactWhitespace(text: string): string {
   if (!text) return text
 

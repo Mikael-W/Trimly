@@ -18,7 +18,13 @@ export interface TrimlyStorage {
   getStats(options?: { days?: number; source?: string }): Promise<StatsResult>
   getDailyStats(days?: number): Promise<DailyStats[]>
 
-  upsertSession(session: Omit<TrimlySession, 'ended_at' | 'total_tokens_input' | 'total_tokens_output' | 'total_cost_usd'> & Partial<TrimlySession>): Promise<void>
+  upsertSession(
+    session: Omit<
+      TrimlySession,
+      'ended_at' | 'total_tokens_input' | 'total_tokens_output' | 'total_cost_usd'
+    > &
+      Partial<TrimlySession>,
+  ): Promise<void>
   updateSession(id: string, patch: Partial<TrimlySession>): Promise<void>
 
   recordToolCall(call: ToolCallInsert): Promise<string>

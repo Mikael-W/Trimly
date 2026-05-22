@@ -1,11 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'
-import type { QueryEventsOptions, StatsResult, TrimlyEvent, TrimlyEventInsert, TrimlySession } from '../../types/events.js'
+import type {
+  QueryEventsOptions,
+  StatsResult,
+  TrimlyEvent,
+  TrimlyEventInsert,
+  TrimlySession,
+} from '../../types/events.js'
 import type { ToolCall, ToolCallInsert } from '../../types/tool-calls.js'
 import type { DailyStats } from '../../utils/budget.js'
 import { CREATE_TABLES_SQL, ENABLE_WAL_SQL } from '../schema.js'
 import type { TrimlyStorage } from '../types.js'
 
-/** node:sqlite is only available in Node 22.5+. */
 type NodeSqliteDb = {
   exec(sql: string): void
   prepare(sql: string): {
@@ -50,7 +55,6 @@ export class NodeSqliteStorage implements TrimlyStorage {
   constructor(private readonly path: string) {}
 
   async init(): Promise<void> {
-    // Dynamic import to avoid crashing on Node < 22.5
     const { DatabaseSync } = await import('node:sqlite' as string)
     this.db = new DatabaseSync(this.path) as NodeSqliteDb
     this.db.exec(ENABLE_WAL_SQL)
@@ -211,7 +215,13 @@ export class NodeSqliteStorage implements TrimlyStorage {
     }
   }
 
-  async upsertSession(session: Partial<TrimlySession> & { id: string; source: TrimlySession['source']; started_at: number }): Promise<void> {
+  async upsertSession(
+    session: Partial<TrimlySession> & {
+      id: string
+      source: TrimlySession['source']
+      started_at: number
+    },
+  ): Promise<void> {
     this._db
       .prepare(
         `INSERT INTO sessions (id, source, started_at, ended_at, cwd, total_tokens_input, total_tokens_output, total_cost_usd)
@@ -292,9 +302,7 @@ export class NodeSqliteStorage implements TrimlyStorage {
 
   async getRecentToolCalls(session_id: string, limit = 5): Promise<ToolCall[]> {
     const rows = this._db
-      .prepare(
-        `SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?`,
-      )
+      .prepare(`SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?`)
       .all(session_id, limit)
     return rows.map((r) => ({
       id: String(r['id']),

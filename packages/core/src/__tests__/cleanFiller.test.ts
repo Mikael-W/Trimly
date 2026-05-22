@@ -10,12 +10,15 @@ describe('Given the cleanFiller strategy', () => {
       ['de', 'Könntest du bitte Redis erklären?', /bitte/i],
       ['it', 'Per favore, potresti spiegarmi Redis?', /per favore/i],
       ['pt', 'Por favor, poderia explicar Redis?', /por favor/i],
-    ] as const)('Then it removes the filler phrase for language %s', (lang, input, removedPattern) => {
-      const result = cleanFiller(input, { languages: [lang] })
-      expect(result.text).not.toMatch(removedPattern)
-      expect(result.tokensSaved).toBeGreaterThan(0)
-      expect(result.applied).toBe(true)
-    })
+    ] as const)(
+      'Then it removes the filler phrase for language %s',
+      (lang, input, removedPattern) => {
+        const result = cleanFiller(input, { languages: [lang] })
+        expect(result.text).not.toMatch(removedPattern)
+        expect(result.tokensSaved).toBeGreaterThan(0)
+        expect(result.applied).toBe(true)
+      },
+    )
   })
 
   describe('When a preserve list is provided containing a word in the text', () => {
@@ -39,7 +42,8 @@ describe('Given the cleanFiller strategy', () => {
 
   describe('When called with a filler-heavy French prompt using new patterns', () => {
     test('Then it removes greeting, hope-well, and would-possible phrases', () => {
-      const input = "Bonjour ! J'espère sincèrement que tu vas très bien aujourd'hui. Serait-il possible de bien vouloir m'expliquer ce que fait buildChartPath ?"
+      const input =
+        "Bonjour ! J'espère sincèrement que tu vas très bien aujourd'hui. Serait-il possible de bien vouloir m'expliquer ce que fait buildChartPath ?"
       const result = cleanFiller(input, { languages: ['fr'] })
       expect(result.applied).toBe(true)
       expect(result.patternsMatched).toContain('fr-greet-hi')

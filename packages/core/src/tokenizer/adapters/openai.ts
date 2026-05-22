@@ -1,4 +1,4 @@
-import { getEncoding, type TiktokenEncoding } from 'js-tiktoken'
+import { type TiktokenEncoding, getEncoding } from 'js-tiktoken'
 
 const _encodings = new Map<string, ReturnType<typeof getEncoding>>()
 

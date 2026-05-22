@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { randomUUID, createHash } from 'node:crypto'
-import { join } from 'node:path'
-import { homedir } from 'node:os'
-import { readStdinJson } from './shared/stdin.mjs'
+import { createHash, randomUUID } from 'node:crypto'
 import { readFile, unlink, writeFile } from 'node:fs/promises'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
+import { readStdinJson } from './shared/stdin.mjs'
 
 const PENDING_FILE = join(homedir(), '.trimly', '.pending.json')
 
@@ -36,18 +36,17 @@ async function clearPending() {
 
 function cleanupSuggestion(text) {
   let r = text
-  r = r.replace(/\s*[.!?]\s*,/g, ',')        // ". ," → ","
-  r = r.replace(/,\s*\./g, '.')               // ", ." → "."
-  r = r.replace(/,\s*,+/g, ',')              // ",," → ","
-  r = r.replace(/[.!?]\s*[.!?]+/g, '.')      // ".." → "."
-  // Remove short orphaned fragments at start (< 5 words before first meaningful clause)
+  r = r.replace(/\s*[.!?]\s*,/g, ',')
+  r = r.replace(/,\s*\./g, '.')
+  r = r.replace(/,\s*,+/g, ',')
+  r = r.replace(/[.!?]\s*[.!?]+/g, '.')
   r = r.replace(/^(?:[\w\s''àâéèêëîïôùûç]{1,40},\s*){1,3}/, (m) => {
     const words = m.trim().split(/\s+/).length
     return words <= 6 ? '' : m
   })
-  r = r.replace(/^[\s.,;:!?]+/, '')           // strip leading punctuation
+  r = r.replace(/^[\s.,;:!?]+/, '')
   r = r.replace(/\s+/g, ' ').trim()
-  return r.replace(/^([a-zàâéèêëîïôùûç])/, c => c.toUpperCase())
+  return r.replace(/^([a-zàâéèêëîïôùûç])/, (c) => c.toUpperCase())
 }
 
 async function main() {
@@ -59,7 +58,8 @@ async function main() {
   if (!prompt) process.exit(0)
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -67,12 +67,19 @@ async function main() {
       core = await import('@trimly/core')
     }
 
-    const { countTokens, computeCost, cleanFiller, analyzePrompt, reducePrompt, createStorage, getDefaultDbPath } = core
+    const {
+      countTokens,
+      computeCost,
+      cleanFiller,
+      analyzePrompt,
+      reducePrompt,
+      createStorage,
+      getDefaultDbPath,
+    } = core
     const model = process.env['ANTHROPIC_MODEL'] ?? 'claude-sonnet-4-6'
     const provider = 'anthropic'
     const config = await loadConfig()
 
-    // Handle oui/non responses to a pending advisor suggestion
     const trimmed = prompt.trim().toLowerCase()
     if (trimmed === 'oui' || trimmed === 'non') {
       const pending = await readPending()
@@ -80,27 +87,31 @@ async function main() {
         await clearPending()
         const chosen = trimmed === 'oui' ? pending.lighter : pending.original
         const label = trimmed === 'oui' ? 'allégée' : 'originale'
-        process.stdout.write(JSON.stringify({
-          hookSpecificOutput: {
-            hookEventName: 'UserPromptSubmit',
-            additionalContext: `[Trimly] L'utilisateur a choisi la version ${label}. Traite ce message comme si l'utilisateur avait envoyé : "${chosen}". Réponds directement à cette demande, ignore le "${trimmed}".`,
-          },
-        }))
+        process.stdout.write(
+          JSON.stringify({
+            hookSpecificOutput: {
+              hookEventName: 'UserPromptSubmit',
+              additionalContext: `[Trimly] L'utilisateur a choisi la version ${label}. Traite ce message comme si l'utilisateur avait envoyé : "${chosen}". Réponds directement à cette demande, ignore le "${trimmed}".`,
+            },
+          }),
+        )
         process.exit(0)
       }
     }
 
-    // Count tokens + detect filler
     const tokensInput = countTokens(provider, model, prompt)
-    const fillerResult = cleanFiller(prompt, { mode: 'detect', languages: config.filler?.languages })
+    const fillerResult = cleanFiller(prompt, {
+      mode: 'detect',
+      languages: config.filler?.languages,
+    })
     const costUsd = computeCost(provider, model, { input_tokens: tokensInput, output_tokens: 0 })
 
-    // Persist event
     const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
-    const costSavedUsd = fillerResult.tokensSaved > 0
-      ? computeCost(provider, model, { input_tokens: fillerResult.tokensSaved, output_tokens: 0 })
-      : 0
+    const costSavedUsd =
+      fillerResult.tokensSaved > 0
+        ? computeCost(provider, model, { input_tokens: fillerResult.tokensSaved, output_tokens: 0 })
+        : 0
 
     await storage.recordEvent({
       id: randomUUID(),
@@ -120,40 +131,43 @@ async function main() {
     })
     await storage.close()
 
-    // Advisor: filler detection
-    const savingsPct = tokensInput > 0
-      ? Math.round((fillerResult.tokensSaved / tokensInput) * 100)
-      : 0
+    const savingsPct =
+      tokensInput > 0 ? Math.round((fillerResult.tokensSaved / tokensInput) * 100) : 0
 
     if (config.advisor && fillerResult.applied && savingsPct >= config.filler.threshold_pct) {
       const cleaned = cleanFiller(prompt, { mode: 'apply', languages: config.filler?.languages })
       const suggestion = cleanupSuggestion(cleaned.text).slice(0, 200)
       await savePending(prompt, suggestion)
-      process.stdout.write(JSON.stringify({
-        hookSpecificOutput: {
-          hookEventName: 'UserPromptSubmit',
-          additionalContext: `[Trimly advisor] ${tokensInput} tokens (~$${costUsd.toFixed(5)}) · ${savingsPct}% de filler détecté.\nVersion allégée : "${suggestion}"\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n💡 Trimly: ${tokensInput} → ${tokensInput - fillerResult.tokensSaved} tokens (−${fillerResult.tokensSaved} · −$${costSavedUsd.toFixed(5)}) · Tape \`oui\` pour la version allégée ou \`non\` pour l'original.`,
-        },
-      }))
+      process.stdout.write(
+        JSON.stringify({
+          hookSpecificOutput: {
+            hookEventName: 'UserPromptSubmit',
+            additionalContext: `[Trimly advisor] ${tokensInput} tokens (~$${costUsd.toFixed(5)}) · ${savingsPct}% de filler détecté.\nVersion allégée : "${suggestion}"\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n💡 Trimly: ${tokensInput} → ${tokensInput - fillerResult.tokensSaved} tokens (−${fillerResult.tokensSaved} · −$${costSavedUsd.toFixed(5)}) · Tape \`oui\` pour la version allégée ou \`non\` pour l'original.`,
+          },
+        }),
+      )
       process.exit(0)
     }
 
-    // Advisor: volume / code / log detection for devs
     const analysis = analyzePrompt(prompt, tokensInput)
     if (config.advisor && analysis.tip) {
       const reduced = reducePrompt(prompt, analysis)
       const reducedTokens = countTokens(provider, model, reduced)
       const savedTokens = tokensInput - reducedTokens
-      const savedCost = computeCost(provider, model, { input_tokens: Math.max(0, savedTokens), output_tokens: 0 })
+      const savedCost = computeCost(provider, model, {
+        input_tokens: Math.max(0, savedTokens),
+        output_tokens: 0,
+      })
       await savePending(prompt, reduced)
-      process.stdout.write(JSON.stringify({
-        hookSpecificOutput: {
-          hookEventName: 'UserPromptSubmit',
-          additionalContext: `[Trimly advisor] ${analysis.tip}\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n⚠️ Trimly: ${tokensInput} → ${reducedTokens} tokens (−${savedTokens} · −$${savedCost.toFixed(5)}) · ${analysis.tip.split('.')[0]}. Tape \`oui\` pour la version réduite ou \`non\` pour l'original.`,
-        },
-      }))
+      process.stdout.write(
+        JSON.stringify({
+          hookSpecificOutput: {
+            hookEventName: 'UserPromptSubmit',
+            additionalContext: `[Trimly advisor] ${analysis.tip}\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n⚠️ Trimly: ${tokensInput} → ${reducedTokens} tokens (−${savedTokens} · −$${savedCost.toFixed(5)}) · ${analysis.tip.split('.')[0]}. Tape \`oui\` pour la version réduite ou \`non\` pour l'original.`,
+          },
+        }),
+      )
     }
-
   } catch (err) {
     if (process.env['TRIMLY_DEBUG']) {
       process.stderr.write(`[Trimly error] ${err}\n`)

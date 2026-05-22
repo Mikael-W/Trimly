@@ -1,6 +1,6 @@
+import { mkdir } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { mkdir } from 'node:fs/promises'
 
 export function getTrimlyDir(): string {
   return join(homedir(), '.trimly')

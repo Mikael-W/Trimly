@@ -1,6 +1,6 @@
-import { describe, test, expect } from 'vitest'
-import { execa } from 'execa'
 import { join } from 'node:path'
+import { execa } from 'execa'
+import { describe, expect, test } from 'vitest'
 
 const STATUSLINE = join(import.meta.dirname, '../../statusline/index.mjs')
 
@@ -39,7 +39,6 @@ describe('Given the statusline script', () => {
       })
 
       expect(result.exitCode).toBe(0)
-      // Empty db should produce the cost line (€0.00 or $0.00)
       expect(result.stdout).toMatch(/💰/)
     })
   })

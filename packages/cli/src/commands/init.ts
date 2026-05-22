@@ -1,7 +1,7 @@
-import { mkdir, writeFile, readFile, access } from 'node:fs/promises'
-import { join } from 'node:path'
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { getTrimlyDir, getConfigPath } from '@trimly/core'
+import { join } from 'node:path'
+import { getConfigPath, getTrimlyDir } from '@trimly/core'
 import kleur from 'kleur'
 
 const DEFAULT_CONFIG = {
@@ -19,11 +19,13 @@ function hookCmd(name: string): string {
 
 function buildHooksBlock() {
   return {
-    UserPromptSubmit: [{ hooks: [{ type: 'command', command: hookCmd('user-prompt-submit.mjs') }] }],
-    Stop:             [{ hooks: [{ type: 'command', command: hookCmd('stop.mjs') }] }],
-    SessionStart:     [{ hooks: [{ type: 'command', command: hookCmd('session-start.mjs') }] }],
-    SessionEnd:       [{ hooks: [{ type: 'command', command: hookCmd('session-end.mjs') }] }],
-    PreCompact:       [{ hooks: [{ type: 'command', command: hookCmd('pre-compact.mjs') }] }],
+    UserPromptSubmit: [
+      { hooks: [{ type: 'command', command: hookCmd('user-prompt-submit.mjs') }] },
+    ],
+    Stop: [{ hooks: [{ type: 'command', command: hookCmd('stop.mjs') }] }],
+    SessionStart: [{ hooks: [{ type: 'command', command: hookCmd('session-start.mjs') }] }],
+    SessionEnd: [{ hooks: [{ type: 'command', command: hookCmd('session-end.mjs') }] }],
+    PreCompact: [{ hooks: [{ type: 'command', command: hookCmd('pre-compact.mjs') }] }],
   }
 }
 
@@ -33,9 +35,7 @@ async function wireHooks(): Promise<void> {
   let settings: Record<string, unknown> = {}
   try {
     settings = JSON.parse(await readFile(settingsPath, 'utf8'))
-  } catch {
-    // file doesn't exist or is not valid JSON — start fresh
-  }
+  } catch {}
 
   if (settings['hooks']) {
     console.log(kleur.yellow('  Hooks already configured in ~/.claude/settings.json, skipping.'))

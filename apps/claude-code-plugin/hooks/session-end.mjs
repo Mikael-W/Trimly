@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
 
 async function main() {
@@ -11,7 +11,8 @@ async function main() {
   if (!session_id) process.exit(0)
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -23,7 +24,6 @@ async function main() {
     const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
-    // Aggregate session totals from events
     const events = await storage.queryEvents({ session_id, status: 'completed' })
     const totalTokensInput = events.reduce((s, e) => s + e.tokens_input, 0)
     const totalTokensOutput = events.reduce((s, e) => s + e.tokens_output, 0)
@@ -38,15 +38,14 @@ async function main() {
 
     await storage.close()
 
-    // Summary output (if config.summary_on_session_end)
     const config = await loadConfig()
     if (config.summary_on_session_end && events.length > 0) {
       const mins = Math.round((Date.now() - (events[0]?.timestamp ?? Date.now())) / 60000)
       process.stdout.write(
         `\n📊 Trimly session summary\n` +
-        `   Prompts:  ${events.length}\n` +
-        `   Tokens:   ${totalTokensInput.toLocaleString()} in / ${totalTokensOutput.toLocaleString()} out\n` +
-        `   Cost:     $${totalCostUsd.toFixed(4)}\n\n`
+          `   Prompts:  ${events.length}\n` +
+          `   Tokens:   ${totalTokensInput.toLocaleString()} in / ${totalTokensOutput.toLocaleString()} out\n` +
+          `   Cost:     $${totalCostUsd.toFixed(4)}\n\n`,
       )
     }
   } catch (err) {

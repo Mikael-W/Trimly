@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { computeBudgetETA, computeBudgetPct, getDailyAverage } from '../utils/budget.js'
 import type { DailyStats } from '../utils/budget.js'
 
@@ -13,7 +13,6 @@ const makeDailyStats = (costs: number[]): DailyStats[] =>
 describe('Given a monthly budget and current spending', () => {
   describe('When computeBudgetETA is called with normal values', () => {
     test('Then it returns the number of days before budget is exhausted', () => {
-      // $15 spent of $30, daily avg = $1 → 15 days left
       const daily = makeDailyStats([1, 1, 1, 1, 1, 1, 1])
       const avg = getDailyAverage(daily)
       const eta = computeBudgetETA(15, 30, avg)
@@ -46,7 +45,7 @@ describe('Given a monthly budget and current spending', () => {
   describe('When getDailyAverage is called with 7 days of data', () => {
     test('Then it returns the mean cost per day', () => {
       const daily = makeDailyStats([1, 2, 3, 4, 5, 6, 7])
-      expect(getDailyAverage(daily)).toBe(4) // (1+2+3+4+5+6+7)/7 = 28/7 = 4
+      expect(getDailyAverage(daily)).toBe(4)
     })
 
     test('Then it returns 0 when stats array is empty', () => {

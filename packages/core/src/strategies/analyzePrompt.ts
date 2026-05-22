@@ -31,7 +31,8 @@ export function reducePrompt(text: string, analysis: PromptAnalysis): string {
       (_match, errorLine: string, stackLines: string) => {
         const frames = stackLines.split('\n').filter(Boolean)
         const userFrames = frames.filter(
-          (f) => !f.includes('node_modules') && !f.includes('node:internal') && !f.includes('node:'),
+          (f) =>
+            !f.includes('node_modules') && !f.includes('node:internal') && !f.includes('node:'),
         )
         const kept = userFrames.slice(0, 3)
         const removed = frames.length - kept.length
@@ -69,7 +70,9 @@ export function analyzePrompt(text: string, totalTokens: number): PromptAnalysis
 
   const lines = text.split('\n')
   const stackTraceLines = lines.filter((l) =>
-    /^\s*(at |Error:|TypeError:|ReferenceError:|SyntaxError:|Warning:|Exception|Traceback|\w+Error:|\d{4}-\d{2}-\d{2}T\d{2}:\d{2})/.test(l),
+    /^\s*(at |Error:|TypeError:|ReferenceError:|SyntaxError:|Warning:|Exception|Traceback|\w+Error:|\d{4}-\d{2}-\d{2}T\d{2}:\d{2})/.test(
+      l,
+    ),
   ).length
   const looksLikeLog = stackTraceLines >= LOG_LINE_MIN
 
@@ -90,5 +93,15 @@ export function analyzePrompt(text: string, totalTokens: number): PromptAnalysis
     tip = `Prompt lourd (${totalTokens} tokens). Scinde en questions plus courtes pour réduire le contexte envoyé.`
   }
 
-  return { totalTokens, codeBlocks, codeTokens, codePct, stackTraceLines, looksLikeLog, isHeavy, heavyReason, tip }
+  return {
+    totalTokens,
+    codeBlocks,
+    codeTokens,
+    codePct,
+    stackTraceLines,
+    looksLikeLog,
+    isHeavy,
+    heavyReason,
+    tip,
+  }
 }

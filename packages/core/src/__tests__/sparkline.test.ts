@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { formatSparkline } from '../utils/sparkline.js'
 
 describe('Given an array of numeric values', () => {

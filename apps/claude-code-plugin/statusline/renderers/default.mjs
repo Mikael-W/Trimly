@@ -1,12 +1,15 @@
-import { c, budgetColor, fillerColor, BRIGHT_GREEN, BRIGHT_YELLOW, DIM, RESET } from '../render/colors.mjs'
+import { computeBudgetPct, computeETA, computeTrend } from '../data/budget.mjs'
+import {
+  BRIGHT_GREEN,
+  BRIGHT_YELLOW,
+  DIM,
+  RESET,
+  budgetColor,
+  c,
+  fillerColor,
+} from '../render/colors.mjs'
 import { formatCost, progressBar, sparkline } from '../render/format.mjs'
-import { computeETA, computeBudgetPct, computeTrend } from '../data/budget.mjs'
 
-/**
- * Mode "default" — 2 lignes :
- * 💰 €12.40 / €30 budget (ETA: 8d) │ 7d: ▁▃█▅▂▁▆
- * 💎 Saved today: €0.42 (32%) │ ⚠ 23% filler in last prompt
- */
 export function renderDefault(data, config) {
   const { todayCost, todaySaved, daily, monthCost, lastFillerPct } = data
   const currency = config.currency ?? 'USD'
@@ -15,7 +18,6 @@ export function renderDefault(data, config) {
 
   const lines = []
 
-  // — Line 1: Cost + budget + sparkline
   let line1 = ''
 
   if (budget > 0) {
@@ -29,21 +31,21 @@ export function renderDefault(data, config) {
     line1 += `💰 ${formatCost(todayCost, budgetCurrency)} today`
   }
 
-  // Sparkline 7 days
   if (daily.length > 0) {
-    const values = [...daily].reverse().map(d => d.cost)
+    const values = [...daily].reverse().map((d) => d.cost)
     const spark = sparkline(values)
     line1 += `  ${c(DIM, `7d: ${spark}`)}`
   }
 
   lines.push(line1)
 
-  // — Line 2: Savings + filler
   const line2Parts = []
 
   if (todaySaved > 0) {
     const savedPct = todayCost > 0 ? Math.round((todaySaved / (todayCost + todaySaved)) * 100) : 0
-    line2Parts.push(c(BRIGHT_GREEN, `💎 Saved today: ${formatCost(todaySaved, budgetCurrency)} (${savedPct}%)`))
+    line2Parts.push(
+      c(BRIGHT_GREEN, `💎 Saved today: ${formatCost(todaySaved, budgetCurrency)} (${savedPct}%)`),
+    )
   }
 
   if (lastFillerPct >= 10) {

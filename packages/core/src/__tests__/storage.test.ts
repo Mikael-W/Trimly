@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { LibsqlStorage } from '../storage/adapters/libsql.js'
 import type { TrimlyStorage } from '../storage/types.js'
 import type { TrimlyEventInsert } from '../types/events.js'
@@ -19,7 +19,6 @@ function makeEvent(overrides: Partial<TrimlyEventInsert> = {}): TrimlyEventInser
   }
 }
 
-// Only LibsqlStorage tested here — NodeSqliteStorage requires Node 22.5+
 describe('Given a LibsqlStorage instance initialised in memory', () => {
   let storage: TrimlyStorage
 
