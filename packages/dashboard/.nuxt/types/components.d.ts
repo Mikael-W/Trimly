@@ -16,6 +16,7 @@ type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {},
 interface _GlobalComponents {
   BaseBigNumber: typeof import("../../components/base/BigNumber.vue")['default']
   BaseLangSwitcher: typeof import("../../components/base/LangSwitcher.vue")['default']
+  BaseSparkline: typeof import("../../components/base/Sparkline.vue")['default']
   CommonCostFormat: typeof import("../../components/common/CostFormat.vue")['default']
   LayoutSidebar: typeof import("../../components/layout/Sidebar.vue")['default']
   UnoIcon: typeof import("../../../../node_modules/.pnpm/@unocss+nuxt@66.7.0_magicast@0.5.3_vite@7.3.3_@types+node@20.19.41_jiti@2.7.0_terser@5._4d82049c658a875f243fc374e5cba385/node_modules/@unocss/nuxt/runtime/UnoIcon.vue")['default']
@@ -46,6 +47,7 @@ interface _GlobalComponents {
   NuxtIsland: typeof import("../../../../node_modules/.pnpm/nuxt@3.21.6_@biomejs+biome@1.9.4_@libsql+client@0.14.0_@parcel+watcher@2.5.6_@types+nod_6e1d18d86b63ce3c47cb83e99c1bb790/node_modules/nuxt/dist/app/components/nuxt-island")['default']
   LazyBaseBigNumber: LazyComponent<typeof import("../../components/base/BigNumber.vue")['default']>
   LazyBaseLangSwitcher: LazyComponent<typeof import("../../components/base/LangSwitcher.vue")['default']>
+  LazyBaseSparkline: LazyComponent<typeof import("../../components/base/Sparkline.vue")['default']>
   LazyCommonCostFormat: LazyComponent<typeof import("../../components/common/CostFormat.vue")['default']>
   LazyLayoutSidebar: LazyComponent<typeof import("../../components/layout/Sidebar.vue")['default']>
   LazyUnoIcon: LazyComponent<typeof import("../../../../node_modules/.pnpm/@unocss+nuxt@66.7.0_magicast@0.5.3_vite@7.3.3_@types+node@20.19.41_jiti@2.7.0_terser@5._4d82049c658a875f243fc374e5cba385/node_modules/@unocss/nuxt/runtime/UnoIcon.vue")['default']>

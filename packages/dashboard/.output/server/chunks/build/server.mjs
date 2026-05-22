@@ -37921,7 +37921,7 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-CZna_iVq.mjs')
+    component: () => import('./index-VU1Tn36v.mjs')
   },
   {
     name: "events",

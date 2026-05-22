@@ -13,6 +13,11 @@ const DEFAULT_CONFIG = {
   storage: { path: join(homedir(), '.trimly', 'events.db'), retention_days: 90 },
   currency: 'USD',
   summary_on_session_end: true,
+  budget: {
+    monthly: { amount: 0, currency: 'USD' },
+    alerts: { at_50_pct: true, at_80_pct: true, at_100_pct: true },
+  },
+  statusline: { mode: 'default' },
 }
 
 async function main() {

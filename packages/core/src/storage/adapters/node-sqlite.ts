@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import type { QueryEventsOptions, StatsResult, TrimlyEvent, TrimlyEventInsert, TrimlySession } from '../../types/events.js'
+import type { ToolCall, ToolCallInsert } from '../../types/tool-calls.js'
+import type { DailyStats } from '../../utils/budget.js'
 import { CREATE_TABLES_SQL, ENABLE_WAL_SQL } from '../schema.js'
 import type { TrimlyStorage } from '../types.js'
 
@@ -243,5 +245,66 @@ export class NodeSqliteStorage implements TrimlyStorage {
     if (sets.length === 0) return
     args.push(id)
     this._db.prepare(`UPDATE sessions SET ${sets.join(', ')} WHERE id = ?`).run(...args)
+  }
+
+  async getDailyStats(days = 7): Promise<DailyStats[]> {
+    const since = Date.now() - days * 86400_000
+    const rows = this._db
+      .prepare(
+        `SELECT
+          date(timestamp/1000, 'unixepoch', 'localtime') as date,
+          SUM(cost_usd) as cost,
+          SUM(cost_saved_usd) as saved,
+          SUM(tokens_input + tokens_output) as tokens
+        FROM events
+        WHERE timestamp >= ? AND status = 'completed'
+        GROUP BY date
+        ORDER BY date DESC`,
+      )
+      .all(since)
+    return rows.map((r) => ({
+      date: String(r['date']),
+      cost: Number(r['cost'] ?? 0),
+      saved: Number(r['saved'] ?? 0),
+      tokens: Number(r['tokens'] ?? 0),
+    }))
+  }
+
+  async recordToolCall(call: ToolCallInsert): Promise<string> {
+    const id = call.id ?? uuidv4()
+    this._db
+      .prepare(
+        `INSERT INTO tool_calls (id, session_id, event_id, tool_name, target, tokens_used, cost_usd, timestamp)
+        VALUES (?,?,?,?,?,?,?,?)`,
+      )
+      .run(
+        id,
+        call.session_id,
+        call.event_id ?? null,
+        call.tool_name,
+        call.target ?? null,
+        call.tokens_used,
+        call.cost_usd,
+        call.timestamp,
+      )
+    return id
+  }
+
+  async getRecentToolCalls(session_id: string, limit = 5): Promise<ToolCall[]> {
+    const rows = this._db
+      .prepare(
+        `SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?`,
+      )
+      .all(session_id, limit)
+    return rows.map((r) => ({
+      id: String(r['id']),
+      session_id: String(r['session_id']),
+      event_id: r['event_id'] != null ? String(r['event_id']) : null,
+      tool_name: String(r['tool_name']),
+      target: r['target'] != null ? String(r['target']) : null,
+      tokens_used: Number(r['tokens_used'] ?? 0),
+      cost_usd: Number(r['cost_usd'] ?? 0),
+      timestamp: Number(r['timestamp']),
+    }))
   }
 }

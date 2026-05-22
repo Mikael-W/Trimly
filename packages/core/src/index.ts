@@ -18,5 +18,8 @@ export * from './strategies/index.js'
 
 // Utils
 export { getTrimlyDir, getDefaultDbPath, getConfigPath, ensureTrimlyDir, resolveDbPath } from './utils/paths.js'
+export { formatSparkline } from './utils/sparkline.js'
+export { computeBudgetETA, computeBudgetPct, getDailyAverage } from './utils/budget.js'
+export type { DailyStats } from './utils/budget.js'
 export { typedMock } from './utils/typedMock.js'
 export type { DeepPartial } from './utils/typedMock.js'

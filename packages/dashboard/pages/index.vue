@@ -44,6 +44,10 @@ const modelEntries = computed(() => {
     }))
 })
 
+const sparklineValues = computed(() =>
+  (timeline.value ?? []).slice(-7).map((d) => d.cost),
+)
+
 </script>
 
 <template>
@@ -72,6 +76,11 @@ const modelEntries = computed(() => {
       />
       <BaseBigNumber :value="s.totalRequests" :label="t('stats.totalRequests')" />
       <BaseBigNumber :value="fmtCost(s.totalSavedUsd)" :label="t('stats.totalSaved')" positive />
+    </div>
+
+    <div v-if="sparklineValues.length > 1" class="sparkline-row">
+      <span class="sparkline-label-text">7-day cost trend</span>
+      <BaseSparkline :values="sparklineValues" :width="120" :height="28" />
     </div>
 
     <div class="card">
@@ -253,5 +262,20 @@ const modelEntries = computed(() => {
   border-radius: 2px;
   transition: width 0.4s ease;
   min-width: 4px;
+}
+
+.sparkline-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: -1rem;
+}
+
+.sparkline-label-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 </style>
