@@ -35,5 +35,14 @@
   "settings.theme": "Thème",
   "settings.theme.dark": "Sombre",
   "settings.theme.light": "Clair",
-  "settings.save": "Enregistrer"
+  "settings.save": "Enregistrer",
+  "savings.title": "Économies",
+  "savings.totalSaved": "Coût économisé",
+  "savings.tokensSaved": "Tokens économisés",
+  "savings.rate": "Taux d'optimisation",
+  "savings.timeline": "Économies journalières",
+  "savings.byModel": "Par modèle",
+  "savings.optimizations": "optimisations",
+  "savings.noOptimizations": "Aucune optimisation enregistrée",
+  "savings.emptyDesc": "Utilisez le bouton 💡 dans l'extension pour optimiser vos prompts et voir vos économies ici."
 }

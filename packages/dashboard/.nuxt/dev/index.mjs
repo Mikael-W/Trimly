@@ -2530,19 +2530,19 @@ _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
 const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"1e3c2-nSAwei1WOu6AitUqodjougqot2I\"",
-    "mtime": "2026-05-23T15:22:54.826Z",
-    "size": 123842,
-    "path": "index.mjs"
-  },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"78444-cgjYQZfPZhLuZE9mPd9q/n2wK0k\"",
-    "mtime": "2026-05-23T15:22:54.827Z",
-    "size": 492612,
+    "etag": "\"78453-qx0UxzqJq+UJhwwdmoEEp8+4nMU\"",
+    "mtime": "2026-05-23T15:22:55.472Z",
+    "size": 492627,
     "path": "index.mjs.map"
+  },
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"1e55a-gvTHhZTkb28vj/JezK/I2v1kegE\"",
+    "mtime": "2026-05-23T15:22:55.472Z",
+    "size": 124250,
+    "path": "index.mjs"
   }
 };
 
@@ -3076,6 +3076,7 @@ async function getIslandContext(event) {
 }
 
 const _lazy_rJ3VwB = () => Promise.resolve().then(function () { return events_get$1; });
+const _lazy_rid4Gb = () => Promise.resolve().then(function () { return savings_get$1; });
 const _lazy_bAa8cX = () => Promise.resolve().then(function () { return stats_get$1; });
 const _lazy_bC8jcz = () => Promise.resolve().then(function () { return timeline_get$1; });
 const _lazy_uDqZrX = () => Promise.resolve().then(function () { return renderer; });
@@ -3083,6 +3084,7 @@ const _lazy_uDqZrX = () => Promise.resolve().then(function () { return renderer;
 const handlers = [
   { route: '', handler: _8hLhzm, lazy: false, middleware: true, method: undefined },
   { route: '/api/events', handler: _lazy_rJ3VwB, lazy: true, middleware: false, method: "get" },
+  { route: '/api/savings', handler: _lazy_rid4Gb, lazy: true, middleware: false, method: "get" },
   { route: '/api/stats', handler: _lazy_bAa8cX, lazy: true, middleware: false, method: "get" },
   { route: '/api/timeline', handler: _lazy_bC8jcz, lazy: true, middleware: false, method: "get" },
   { route: '/__nuxt_error', handler: _lazy_uDqZrX, lazy: true, middleware: false, method: undefined },
@@ -3443,8 +3445,8 @@ let _storage = null;
 async function getStorage() {
   var _a;
   if (_storage) return _storage;
-  const path = (_a = process.env["TRIMLY_DB_PATH"]) != null ? _a : getDefaultDbPath();
-  if (!process.env["TRIMLY_DB_PATH"]) await ensureTrimlyDir();
+  const path = (_a = process.env.TRIMLY_DB_PATH) != null ? _a : getDefaultDbPath();
+  if (!process.env.TRIMLY_DB_PATH) await ensureTrimlyDir();
   _storage = await createStorage$1(path);
   return _storage;
 }
@@ -3453,11 +3455,11 @@ const events_get = defineEventHandler(async (event) => {
   const query = getQuery$1(event);
   const storage = await getStorage();
   return storage.queryEvents({
-    source: query["source"],
-    status: query["status"],
-    days: query["days"] ? Number(query["days"]) : void 0,
-    limit: query["limit"] ? Number(query["limit"]) : 100,
-    cursor: query["cursor"] ? Number(query["cursor"]) : void 0
+    source: query.source,
+    status: query.status,
+    days: query.days ? Number(query.days) : void 0,
+    limit: query.limit ? Number(query.limit) : 100,
+    cursor: query.cursor ? Number(query.cursor) : void 0
   });
 });
 
@@ -3466,10 +3468,55 @@ const events_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: events_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const savings_get = defineEventHandler(async (event) => {
+  var _a, _b, _c, _d, _e, _f, _g;
+  const query = getQuery$1(event);
+  const days = query.days ? Number(query.days) : 30;
+  const storage = await getStorage();
+  const events = await storage.queryEvents({ days, limit: 5e4 });
+  let totalSavedUsd = 0;
+  let totalTokensSaved = 0;
+  let totalTokens = 0;
+  const byModel = {};
+  const byDay = /* @__PURE__ */ new Map();
+  for (const e of events) {
+    totalTokens += e.tokens_input + e.tokens_output;
+    totalSavedUsd += (_a = e.cost_saved_usd) != null ? _a : 0;
+    totalTokensSaved += (_b = e.tokens_saved_optim) != null ? _b : 0;
+    if (((_c = e.tokens_saved_optim) != null ? _c : 0) > 0) {
+      let m = byModel[e.model];
+      if (!m) {
+        m = { tokensSaved: 0, costSaved: 0, events: 0 };
+        byModel[e.model] = m;
+      }
+      m.tokensSaved += (_d = e.tokens_saved_optim) != null ? _d : 0;
+      m.costSaved += (_e = e.cost_saved_usd) != null ? _e : 0;
+      m.events++;
+      const d = new Date(e.timestamp).toISOString().slice(0, 10);
+      const entry = (_f = byDay.get(d)) != null ? _f : { date: d, costSaved: 0 };
+      entry.costSaved += (_g = e.cost_saved_usd) != null ? _g : 0;
+      byDay.set(d, entry);
+    }
+  }
+  const savingsRate = totalTokens > 0 ? totalTokensSaved / totalTokens * 100 : 0;
+  return {
+    totalSavedUsd,
+    totalTokensSaved,
+    savingsRate,
+    byModel,
+    timeline: Array.from(byDay.values()).sort((a, b) => a.date.localeCompare(b.date))
+  };
+});
+
+const savings_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: savings_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const stats_get = defineEventHandler(async (event) => {
   const query = getQuery$1(event);
-  const days = query["days"] ? Number(query["days"]) : void 0;
-  const source = typeof query["source"] === "string" ? query["source"] : void 0;
+  const days = query.days ? Number(query.days) : void 0;
+  const source = typeof query.source === "string" ? query.source : void 0;
   const storage = await getStorage();
   return storage.getStats({ days, source });
 });
@@ -3482,7 +3529,7 @@ const stats_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
 const timeline_get = defineEventHandler(async (event) => {
   var _a;
   const query = getQuery$1(event);
-  const days = query["days"] ? Number(query["days"]) : 30;
+  const days = query.days ? Number(query.days) : 30;
   const storage = await getStorage();
   const events = await storage.queryEvents({ days, limit: 1e4 });
   const byDay = /* @__PURE__ */ new Map();

@@ -1,9 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'
-import type { QueryEventsOptions, StatsResult, TrimlyEvent, TrimlyEventInsert, TrimlySession } from '../../types/events.js'
+import type {
+  QueryEventsOptions,
+  StatsResult,
+  TrimlyEvent,
+  TrimlyEventInsert,
+  TrimlySession,
+} from '../../types/events.js'
+import type { ToolCall, ToolCallInsert } from '../../types/tool-calls.js'
+import type { DailyStats } from '../../utils/budget.js'
 import { CREATE_TABLES_SQL, ENABLE_WAL_SQL } from '../schema.js'
 import type { TrimlyStorage } from '../types.js'
 
-/** node:sqlite is only available in Node 22.5+. */
 type NodeSqliteDb = {
   exec(sql: string): void
   prepare(sql: string): {
@@ -16,29 +23,27 @@ type NodeSqliteDb = {
 
 function rowToEvent(row: Record<string, unknown>): TrimlyEvent {
   return {
-    id: String(row['id']),
-    session_id: String(row['session_id'] ?? ''),
-    timestamp: Number(row['timestamp']),
-    source: row['source'] as TrimlyEvent['source'],
-    provider: String(row['provider']),
-    model: String(row['model']),
-    tokens_input: Number(row['tokens_input'] ?? 0),
-    tokens_output: Number(row['tokens_output'] ?? 0),
-    tokens_cache_read: Number(row['tokens_cache_read'] ?? 0),
-    tokens_cache_write: Number(row['tokens_cache_write'] ?? 0),
-    tokens_saved_optim: Number(row['tokens_saved_optim'] ?? 0),
-    tokens_saved_shadow: Number(row['tokens_saved_shadow'] ?? 0),
-    cost_usd: Number(row['cost_usd'] ?? 0),
-    cost_saved_usd: Number(row['cost_saved_usd'] ?? 0),
-    cost_saved_shadow_usd: Number(row['cost_saved_shadow_usd'] ?? 0),
-    duration_ms: row['duration_ms'] != null ? Number(row['duration_ms']) : null,
-    status: row['status'] as TrimlyEvent['status'],
-    filler_detected: Boolean(row['filler_detected']),
-    strategies_applied: row['strategies_applied']
-      ? JSON.parse(String(row['strategies_applied']))
-      : [],
-    prompt_preview: row['prompt_preview'] != null ? String(row['prompt_preview']) : null,
-    tags: row['tags'] != null ? String(row['tags']) : null,
+    id: String(row.id),
+    session_id: String(row.session_id ?? ''),
+    timestamp: Number(row.timestamp),
+    source: row.source as TrimlyEvent['source'],
+    provider: String(row.provider),
+    model: String(row.model),
+    tokens_input: Number(row.tokens_input ?? 0),
+    tokens_output: Number(row.tokens_output ?? 0),
+    tokens_cache_read: Number(row.tokens_cache_read ?? 0),
+    tokens_cache_write: Number(row.tokens_cache_write ?? 0),
+    tokens_saved_optim: Number(row.tokens_saved_optim ?? 0),
+    tokens_saved_shadow: Number(row.tokens_saved_shadow ?? 0),
+    cost_usd: Number(row.cost_usd ?? 0),
+    cost_saved_usd: Number(row.cost_saved_usd ?? 0),
+    cost_saved_shadow_usd: Number(row.cost_saved_shadow_usd ?? 0),
+    duration_ms: row.duration_ms != null ? Number(row.duration_ms) : null,
+    status: row.status as TrimlyEvent['status'],
+    filler_detected: Boolean(row.filler_detected),
+    strategies_applied: row.strategies_applied ? JSON.parse(String(row.strategies_applied)) : [],
+    prompt_preview: row.prompt_preview != null ? String(row.prompt_preview) : null,
+    tags: row.tags != null ? String(row.tags) : null,
   }
 }
 
@@ -48,7 +53,6 @@ export class NodeSqliteStorage implements TrimlyStorage {
   constructor(private readonly path: string) {}
 
   async init(): Promise<void> {
-    // Dynamic import to avoid crashing on Node < 22.5
     const { DatabaseSync } = await import('node:sqlite' as string)
     this.db = new DatabaseSync(this.path) as NodeSqliteDb
     this.db.exec(ENABLE_WAL_SQL)
@@ -195,21 +199,27 @@ export class NodeSqliteStorage implements TrimlyStorage {
       .all(...args)
 
     return {
-      totalRequests: Number(t?.['total_requests'] ?? 0),
-      totalTokensInput: Number(t?.['total_tokens_input'] ?? 0),
-      totalTokensOutput: Number(t?.['total_tokens_output'] ?? 0),
-      totalCostUsd: Number(t?.['total_cost_usd'] ?? 0),
-      totalSavedUsd: Number(t?.['total_saved_usd'] ?? 0),
+      totalRequests: Number(t?.total_requests ?? 0),
+      totalTokensInput: Number(t?.total_tokens_input ?? 0),
+      totalTokensOutput: Number(t?.total_tokens_output ?? 0),
+      totalCostUsd: Number(t?.total_cost_usd ?? 0),
+      totalSavedUsd: Number(t?.total_saved_usd ?? 0),
       byModel: Object.fromEntries(
         modelRows.map((r) => [
-          String(r['model']),
-          { requests: Number(r['requests']), cost: Number(r['cost']) },
+          String(r.model),
+          { requests: Number(r.requests), cost: Number(r.cost) },
         ]),
       ),
     }
   }
 
-  async upsertSession(session: Partial<TrimlySession> & { id: string; source: TrimlySession['source']; started_at: number }): Promise<void> {
+  async upsertSession(
+    session: Partial<TrimlySession> & {
+      id: string
+      source: TrimlySession['source']
+      started_at: number
+    },
+  ): Promise<void> {
     this._db
       .prepare(
         `INSERT INTO sessions (id, source, started_at, ended_at, cwd, total_tokens_input, total_tokens_output, total_cost_usd)
@@ -243,5 +253,64 @@ export class NodeSqliteStorage implements TrimlyStorage {
     if (sets.length === 0) return
     args.push(id)
     this._db.prepare(`UPDATE sessions SET ${sets.join(', ')} WHERE id = ?`).run(...args)
+  }
+
+  async getDailyStats(days = 7): Promise<DailyStats[]> {
+    const since = Date.now() - days * 86400_000
+    const rows = this._db
+      .prepare(
+        `SELECT
+          date(timestamp/1000, 'unixepoch', 'localtime') as date,
+          SUM(cost_usd) as cost,
+          SUM(cost_saved_usd) as saved,
+          SUM(tokens_input + tokens_output) as tokens
+        FROM events
+        WHERE timestamp >= ? AND status = 'completed'
+        GROUP BY date
+        ORDER BY date DESC`,
+      )
+      .all(since)
+    return rows.map((r) => ({
+      date: String(r.date),
+      cost: Number(r.cost ?? 0),
+      saved: Number(r.saved ?? 0),
+      tokens: Number(r.tokens ?? 0),
+    }))
+  }
+
+  async recordToolCall(call: ToolCallInsert): Promise<string> {
+    const id = call.id ?? uuidv4()
+    this._db
+      .prepare(
+        `INSERT INTO tool_calls (id, session_id, event_id, tool_name, target, tokens_used, cost_usd, timestamp)
+        VALUES (?,?,?,?,?,?,?,?)`,
+      )
+      .run(
+        id,
+        call.session_id,
+        call.event_id ?? null,
+        call.tool_name,
+        call.target ?? null,
+        call.tokens_used,
+        call.cost_usd,
+        call.timestamp,
+      )
+    return id
+  }
+
+  async getRecentToolCalls(session_id: string, limit = 5): Promise<ToolCall[]> {
+    const rows = this._db
+      .prepare('SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?')
+      .all(session_id, limit)
+    return rows.map((r) => ({
+      id: String(r.id),
+      session_id: String(r.session_id),
+      event_id: r.event_id != null ? String(r.event_id) : null,
+      tool_name: String(r.tool_name),
+      target: r.target != null ? String(r.target) : null,
+      tokens_used: Number(r.tokens_used ?? 0),
+      cost_usd: Number(r.cost_usd ?? 0),
+      timestamp: Number(r.timestamp),
+    }))
   }
 }

@@ -20,7 +20,17 @@ export async function cmdExport(options: ExportOptions = {}): Promise<void> {
   if (format === 'csv') {
     const header = 'id,timestamp,source,provider,model,tokens_input,tokens_output,cost_usd,status'
     const rows = events.map((e) =>
-      [e.id, e.timestamp, e.source, e.provider, e.model, e.tokens_input, e.tokens_output, e.cost_usd, e.status].join(','),
+      [
+        e.id,
+        e.timestamp,
+        e.source,
+        e.provider,
+        e.model,
+        e.tokens_input,
+        e.tokens_output,
+        e.cost_usd,
+        e.status,
+      ].join(','),
     )
     await writeFile(outPath, [header, ...rows].join('\n'))
   } else {

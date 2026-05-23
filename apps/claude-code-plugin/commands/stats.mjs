@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 
 const args = process.argv.slice(2)
 const sessionFlag = args.indexOf('--session')
@@ -8,7 +8,8 @@ const sessionId = sessionFlag >= 0 ? args[sessionFlag + 1] : undefined
 
 async function main() {
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -17,7 +18,7 @@ async function main() {
     }
 
     const { createStorage, getDefaultDbPath, formatCost } = core
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     const [sessionStats, todayStats, monthStats] = await Promise.all([
@@ -34,26 +35,34 @@ async function main() {
     out.push('\n📊 Trimly stats\n')
 
     if (sessionStats) {
-      out.push(`Session courante:`)
+      out.push('Session courante:')
       out.push(`  Prompts:    ${sessionStats.count}`)
-      out.push(`  Tokens:     ${sessionStats.tokensIn.toLocaleString()} in / ${sessionStats.tokensOut.toLocaleString()} out`)
+      out.push(
+        `  Tokens:     ${sessionStats.tokensIn.toLocaleString()} in / ${sessionStats.tokensOut.toLocaleString()} out`,
+      )
       out.push(`  Cost:       ${formatCost(sessionStats.cost, 'USD', 'en-US')}`)
-      out.push(`  Saved:      ${formatCost(sessionStats.saved, 'USD', 'en-US')} (${pct(sessionStats.saved, sessionStats.cost)}%)`)
+      out.push(
+        `  Saved:      ${formatCost(sessionStats.saved, 'USD', 'en-US')} (${pct(sessionStats.saved, sessionStats.cost)}%)`,
+      )
       out.push('')
     }
 
     out.push(`Aujourd'hui:`)
     out.push(`  Prompts:    ${todayStats.totalRequests}`)
-    out.push(`  Tokens:     ${todayStats.totalTokensInput.toLocaleString()} in / ${todayStats.totalTokensOutput.toLocaleString()} out`)
+    out.push(
+      `  Tokens:     ${todayStats.totalTokensInput.toLocaleString()} in / ${todayStats.totalTokensOutput.toLocaleString()} out`,
+    )
     out.push(`  Cost:       ${formatCost(todayStats.totalCostUsd, 'USD', 'en-US')}`)
     out.push(`  Saved:      ${formatCost(todayStats.totalSavedUsd, 'USD', 'en-US')}`)
     out.push('')
 
-    out.push(`Ce mois (30j):`)
+    out.push('Ce mois (30j):')
     out.push(`  Prompts:    ${monthStats.totalRequests}`)
     out.push(`  Tokens:     ${monthStats.totalTokensInput.toLocaleString()} in`)
     out.push(`  Cost:       ${formatCost(monthStats.totalCostUsd, 'USD', 'en-US')}`)
-    out.push(`  Saved:      ${formatCost(monthStats.totalSavedUsd, 'USD', 'en-US')} (${pct(monthStats.totalSavedUsd, monthStats.totalCostUsd)}%)`)
+    out.push(
+      `  Saved:      ${formatCost(monthStats.totalSavedUsd, 'USD', 'en-US')} (${pct(monthStats.totalSavedUsd, monthStats.totalCostUsd)}%)`,
+    )
     out.push('')
 
     if (Object.keys(monthStats.byModel).length > 0) {

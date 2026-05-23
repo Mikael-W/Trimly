@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { join } from 'node:path'
+import { access, mkdir, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { mkdir, writeFile, access } from 'node:fs/promises'
+import { join } from 'node:path'
 
 async function main() {
   const trimlyDir = join(homedir(), '.trimly')

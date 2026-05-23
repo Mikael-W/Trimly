@@ -13,10 +13,6 @@ export interface CompactHistoryResult {
   shouldCompact: boolean
 }
 
-/**
- * Shadow mode: estimate savings if history were compacted.
- * Does NOT modify messages — read-only analysis.
- */
 export function analyzeCompactHistory(
   messages: Message[],
   totalTokens: number,
@@ -30,11 +26,9 @@ export function analyzeCompactHistory(
     return { tokensSavedShadow: 0, costSavedShadowUsd: 0, shouldCompact: false }
   }
 
-  // Keep system + last 6 messages + estimated summary
   const keptMessages = messages.filter((m) => m.role === 'system').length + 6
   const removedMessages = Math.max(0, messages.length - keptMessages)
 
-  // Rough estimate: each removed message averages totalTokens / messages.length
   const avgTokensPerMsg = totalTokens / Math.max(1, messages.length)
   const tokensSavedShadow = Math.max(
     0,

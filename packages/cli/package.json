@@ -1,6 +1,6 @@
 {
   "name": "@trimly/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Trimly CLI — track and optimize your LLM token spend",
   "license": "Apache-2.0",
   "author": {
@@ -15,9 +15,34 @@
       "url": "https://github.com/Mikael-W"
     }
   ],
+  "homepage": "https://github.com/Mikael-W/Trimly#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mikael-W/Trimly.git",
+    "directory": "packages/cli"
+  },
+  "bugs": "https://github.com/Mikael-W/Trimly/issues",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "cli",
+    "tokens",
+    "llm",
+    "cost",
+    "pricing",
+    "anthropic",
+    "openai"
+  ],
   "type": "module",
   "bin": {
     "trimly": "./bin/trimly.js"
+  },
+  "files": ["dist", "bin"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
     "build": "tsup",

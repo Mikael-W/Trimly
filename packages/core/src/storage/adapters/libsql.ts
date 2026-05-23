@@ -1,6 +1,14 @@
-import { createClient, type InValue } from '@libsql/client'
+import { type InValue, createClient } from '@libsql/client'
 import { v4 as uuidv4 } from 'uuid'
-import type { QueryEventsOptions, StatsResult, TrimlyEvent, TrimlyEventInsert, TrimlySession } from '../../types/events.js'
+import type {
+  QueryEventsOptions,
+  StatsResult,
+  TrimlyEvent,
+  TrimlyEventInsert,
+  TrimlySession,
+} from '../../types/events.js'
+import type { ToolCall, ToolCallInsert } from '../../types/tool-calls.js'
+import type { DailyStats } from '../../utils/budget.js'
 import { CREATE_TABLES_SQL, ENABLE_WAL_SQL } from '../schema.js'
 import type { TrimlyStorage } from '../types.js'
 
@@ -8,29 +16,27 @@ type LibsqlClient = ReturnType<typeof createClient>
 
 function rowToEvent(row: Record<string, unknown>): TrimlyEvent {
   return {
-    id: String(row['id']),
-    session_id: String(row['session_id'] ?? ''),
-    timestamp: Number(row['timestamp']),
-    source: row['source'] as TrimlyEvent['source'],
-    provider: String(row['provider']),
-    model: String(row['model']),
-    tokens_input: Number(row['tokens_input'] ?? 0),
-    tokens_output: Number(row['tokens_output'] ?? 0),
-    tokens_cache_read: Number(row['tokens_cache_read'] ?? 0),
-    tokens_cache_write: Number(row['tokens_cache_write'] ?? 0),
-    tokens_saved_optim: Number(row['tokens_saved_optim'] ?? 0),
-    tokens_saved_shadow: Number(row['tokens_saved_shadow'] ?? 0),
-    cost_usd: Number(row['cost_usd'] ?? 0),
-    cost_saved_usd: Number(row['cost_saved_usd'] ?? 0),
-    cost_saved_shadow_usd: Number(row['cost_saved_shadow_usd'] ?? 0),
-    duration_ms: row['duration_ms'] != null ? Number(row['duration_ms']) : null,
-    status: row['status'] as TrimlyEvent['status'],
-    filler_detected: Boolean(row['filler_detected']),
-    strategies_applied: row['strategies_applied']
-      ? JSON.parse(String(row['strategies_applied']))
-      : [],
-    prompt_preview: row['prompt_preview'] != null ? String(row['prompt_preview']) : null,
-    tags: row['tags'] != null ? String(row['tags']) : null,
+    id: String(row.id),
+    session_id: String(row.session_id ?? ''),
+    timestamp: Number(row.timestamp),
+    source: row.source as TrimlyEvent['source'],
+    provider: String(row.provider),
+    model: String(row.model),
+    tokens_input: Number(row.tokens_input ?? 0),
+    tokens_output: Number(row.tokens_output ?? 0),
+    tokens_cache_read: Number(row.tokens_cache_read ?? 0),
+    tokens_cache_write: Number(row.tokens_cache_write ?? 0),
+    tokens_saved_optim: Number(row.tokens_saved_optim ?? 0),
+    tokens_saved_shadow: Number(row.tokens_saved_shadow ?? 0),
+    cost_usd: Number(row.cost_usd ?? 0),
+    cost_saved_usd: Number(row.cost_saved_usd ?? 0),
+    cost_saved_shadow_usd: Number(row.cost_saved_shadow_usd ?? 0),
+    duration_ms: row.duration_ms != null ? Number(row.duration_ms) : null,
+    status: row.status as TrimlyEvent['status'],
+    filler_detected: Boolean(row.filler_detected),
+    strategies_applied: row.strategies_applied ? JSON.parse(String(row.strategies_applied)) : [],
+    prompt_preview: row.prompt_preview != null ? String(row.prompt_preview) : null,
+    tags: row.tags != null ? String(row.tags) : null,
   }
 }
 
@@ -57,7 +63,10 @@ export class LibsqlStorage implements TrimlyStorage {
     this.client.close()
   }
 
-  private async exec(sql: string, args: unknown[] = []): Promise<ReturnType<LibsqlClient['execute']>> {
+  private async exec(
+    sql: string,
+    args: unknown[] = [],
+  ): Promise<ReturnType<LibsqlClient['execute']>> {
     return this.client.execute({ sql, args: args.map(toInValue) })
   }
 
@@ -192,18 +201,15 @@ export class LibsqlStorage implements TrimlyStorage {
     const t = totals.rows[0] as Record<string, unknown> | undefined
 
     return {
-      totalRequests: Number(t?.['total_requests'] ?? 0),
-      totalTokensInput: Number(t?.['total_tokens_input'] ?? 0),
-      totalTokensOutput: Number(t?.['total_tokens_output'] ?? 0),
-      totalCostUsd: Number(t?.['total_cost_usd'] ?? 0),
-      totalSavedUsd: Number(t?.['total_saved_usd'] ?? 0),
+      totalRequests: Number(t?.total_requests ?? 0),
+      totalTokensInput: Number(t?.total_tokens_input ?? 0),
+      totalTokensOutput: Number(t?.total_tokens_output ?? 0),
+      totalCostUsd: Number(t?.total_cost_usd ?? 0),
+      totalSavedUsd: Number(t?.total_saved_usd ?? 0),
       byModel: Object.fromEntries(
         byModel.rows.map((r) => {
           const row = r as Record<string, unknown>
-          return [
-            String(row['model']),
-            { requests: Number(row['requests']), cost: Number(row['cost']) },
-          ]
+          return [String(row.model), { requests: Number(row.requests), cost: Number(row.cost) }]
         }),
       ),
     }
@@ -248,5 +254,69 @@ export class LibsqlStorage implements TrimlyStorage {
     if (sets.length === 0) return
     args.push(id)
     await this.exec(`UPDATE sessions SET ${sets.join(', ')} WHERE id = ?`, args)
+  }
+
+  async getDailyStats(days = 7): Promise<DailyStats[]> {
+    const since = Date.now() - days * 86400_000
+    const result = await this.exec(
+      `SELECT
+        date(timestamp/1000, 'unixepoch', 'localtime') as date,
+        SUM(cost_usd) as cost,
+        SUM(cost_saved_usd) as saved,
+        SUM(tokens_input + tokens_output) as tokens
+      FROM events
+      WHERE timestamp >= ? AND status = 'completed'
+      GROUP BY date
+      ORDER BY date DESC`,
+      [since],
+    )
+    return result.rows.map((r) => {
+      const row = r as Record<string, unknown>
+      return {
+        date: String(row.date),
+        cost: Number(row.cost ?? 0),
+        saved: Number(row.saved ?? 0),
+        tokens: Number(row.tokens ?? 0),
+      }
+    })
+  }
+
+  async recordToolCall(call: ToolCallInsert): Promise<string> {
+    const id = call.id ?? uuidv4()
+    await this.exec(
+      `INSERT INTO tool_calls (id, session_id, event_id, tool_name, target, tokens_used, cost_usd, timestamp)
+      VALUES (?,?,?,?,?,?,?,?)`,
+      [
+        id,
+        call.session_id,
+        call.event_id ?? null,
+        call.tool_name,
+        call.target ?? null,
+        call.tokens_used,
+        call.cost_usd,
+        call.timestamp,
+      ],
+    )
+    return id
+  }
+
+  async getRecentToolCalls(session_id: string, limit = 5): Promise<ToolCall[]> {
+    const result = await this.exec(
+      'SELECT * FROM tool_calls WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?',
+      [session_id, limit],
+    )
+    return result.rows.map((r) => {
+      const row = r as Record<string, unknown>
+      return {
+        id: String(row.id),
+        session_id: String(row.session_id),
+        event_id: row.event_id != null ? String(row.event_id) : null,
+        tool_name: String(row.tool_name),
+        target: row.target != null ? String(row.target) : null,
+        tokens_used: Number(row.tokens_used ?? 0),
+        cost_usd: Number(row.cost_usd ?? 0),
+        timestamp: Number(row.timestamp),
+      }
+    })
   }
 }

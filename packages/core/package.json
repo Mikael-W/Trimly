@@ -1,6 +1,6 @@
 {
   "name": "@trimly/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Trimly core — tokenization, pricing, storage, strategies",
   "license": "Apache-2.0",
   "author": {
@@ -14,6 +14,25 @@
       "email": "mikaelwaw@gmail.com",
       "url": "https://github.com/Mikael-W"
     }
+  ],
+  "homepage": "https://github.com/Mikael-W/Trimly#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mikael-W/Trimly.git",
+    "directory": "packages/core"
+  },
+  "bugs": "https://github.com/Mikael-W/Trimly/issues",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "tokens",
+    "token-counter",
+    "llm",
+    "cost",
+    "pricing",
+    "anthropic",
+    "openai",
+    "tokenizer"
   ],
   "type": "module",
   "main": "./dist/index.cjs",
@@ -29,6 +48,13 @@
       "types": "./dist/browser.d.ts",
       "import": "./dist/browser.js"
     }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
     "build": "tsup",

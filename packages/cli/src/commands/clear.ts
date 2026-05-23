@@ -18,7 +18,8 @@ async function confirm(question: string): Promise<boolean> {
 }
 
 export async function cmdClear(options: ClearOptions = {}): Promise<void> {
-  const ok = options.yes || (await confirm(kleur.yellow('⚠️  Supprimer tous les events Trimly? (y/N) ')))
+  const ok =
+    options.yes || (await confirm(kleur.yellow('⚠️  Supprimer tous les events Trimly? (y/N) ')))
 
   if (!ok) {
     console.log('Annulé.')
@@ -27,7 +28,6 @@ export async function cmdClear(options: ClearOptions = {}): Promise<void> {
 
   const storage = await openStorage(options.db)
 
-  // Access internal client to run DELETE — expose via interface in V2
   const s = storage as unknown as {
     client?: { execute(sql: string): Promise<unknown> }
     db?: { exec(sql: string): void }

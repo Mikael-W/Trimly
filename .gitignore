@@ -31,6 +31,11 @@ Thumbs.db
 *.swp
 *.swo
 
+# Nuxt build output
+.nuxt/
+.output/
+.data/
+
 # Extension build
 apps/browser-extension/dist/
 apps/browser-extension/*.zip

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { typedMock } from '../utils/typedMock.js'
 import type { TrimlyEvent } from '../types/events.js'
+import { typedMock } from '../utils/typedMock.js'
 
 describe('Given the typedMock utility is available', () => {
   describe('When the module is imported', () => {

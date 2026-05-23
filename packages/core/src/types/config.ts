@@ -9,6 +9,21 @@ export interface StorageConfig {
   retention_days: number
 }
 
+export interface BudgetAlerts {
+  at_50_pct: boolean
+  at_80_pct: boolean
+  at_100_pct: boolean
+}
+
+export interface BudgetConfig {
+  monthly: { amount: number; currency: 'USD' | 'EUR' }
+  alerts: BudgetAlerts
+}
+
+export interface StatuslineConfig {
+  mode: 'default' | 'compact' | 'verbose'
+}
+
 export interface TrimlyConfig {
   verbose: boolean
   advisor: boolean
@@ -16,6 +31,8 @@ export interface TrimlyConfig {
   storage: StorageConfig
   currency: 'USD' | 'EUR'
   summary_on_session_end: boolean
+  budget?: BudgetConfig
+  statusline?: StatuslineConfig
 }
 
 export const DEFAULT_CONFIG: TrimlyConfig = {
@@ -32,4 +49,9 @@ export const DEFAULT_CONFIG: TrimlyConfig = {
   },
   currency: 'USD',
   summary_on_session_end: true,
+  budget: {
+    monthly: { amount: 0, currency: 'USD' },
+    alerts: { at_50_pct: true, at_80_pct: true, at_100_pct: true },
+  },
+  statusline: { mode: 'default' },
 }

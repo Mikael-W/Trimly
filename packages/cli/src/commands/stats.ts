@@ -23,10 +23,7 @@ export async function cmdStats(options: StatsOptions = {}): Promise<void> {
   lines.push(kleur.bold('📊 Trimly stats'))
   lines.push('')
 
-  const section = (
-    label: string,
-    stats: Awaited<ReturnType<typeof storage.getStats>>,
-  ) => {
+  const section = (label: string, stats: Awaited<ReturnType<typeof storage.getStats>>) => {
     lines.push(kleur.bold(label))
     lines.push(`  Prompts:  ${kleur.cyan(String(stats.totalRequests))}`)
     lines.push(
@@ -34,10 +31,11 @@ export async function cmdStats(options: StatsOptions = {}): Promise<void> {
     )
     lines.push(`  Cost:     ${kleur.yellow(formatCost(stats.totalCostUsd, 'USD', 'en-US'))}`)
     if (stats.totalSavedUsd > 0) {
-      const pct = stats.totalCostUsd > 0
-        ? Math.round((stats.totalSavedUsd / stats.totalCostUsd) * 100)
-        : 0
-      lines.push(`  Saved:    ${kleur.green(formatCost(stats.totalSavedUsd, 'USD', 'en-US'))} (${pct}%)`)
+      const pct =
+        stats.totalCostUsd > 0 ? Math.round((stats.totalSavedUsd / stats.totalCostUsd) * 100) : 0
+      lines.push(
+        `  Saved:    ${kleur.green(formatCost(stats.totalSavedUsd, 'USD', 'en-US'))} (${pct}%)`,
+      )
     }
     lines.push('')
   }

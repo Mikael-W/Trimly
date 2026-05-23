@@ -7,7 +7,11 @@ export const ES_FILLER_PATTERNS: FillerPattern[] = [
   { id: 'es-could-you-1', pattern: /\b(podrías|podría usted)\b/gi, replace: '' },
   { id: 'es-could-you-2', pattern: /\bpodrías decirme\b/gi, replace: '' },
   { id: 'es-wondering', pattern: /\bme preguntaba si\b/gi, replace: '' },
-  { id: 'es-greet', pattern: /^(hola|buenos días|buenas tardes|buenas noches)[,!]?\s*/gi, replace: '' },
+  {
+    id: 'es-greet',
+    pattern: /^(hola|buenos días|buenas tardes|buenas noches)[,!]?\s*/gi,
+    replace: '',
+  },
   { id: 'es-basically', pattern: /\bbásicamente\b/gi, replace: '' },
   { id: 'es-actually', pattern: /\ben realidad\b/gi, replace: '' },
   { id: 'es-if-possible', pattern: /\bsi es posible\b/gi, replace: '' },

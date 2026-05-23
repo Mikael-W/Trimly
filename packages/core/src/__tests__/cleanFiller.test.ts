@@ -10,12 +10,33 @@ describe('Given the cleanFiller strategy', () => {
       ['de', 'Könntest du bitte Redis erklären?', /bitte/i],
       ['it', 'Per favore, potresti spiegarmi Redis?', /per favore/i],
       ['pt', 'Por favor, poderia explicar Redis?', /por favor/i],
-    ] as const)('Then it removes the filler phrase for language %s', (lang, input, removedPattern) => {
-      const result = cleanFiller(input, { languages: [lang] })
-      expect(result.text).not.toMatch(removedPattern)
-      expect(result.tokensSaved).toBeGreaterThan(0)
-      expect(result.applied).toBe(true)
-    })
+      ['nl', 'Zou je alsjeblieft Redis uitleggen?', /alsjeblieft/i],
+      ['pl', 'Czy mógłbyś proszę wyjaśnić Redis?', /proszę/i],
+      ['sv', 'Snälla, kan du förklara Redis?', /snälla/i],
+      ['da', 'Kunne du venligst forklare Redis?', /venligst/i],
+      ['cs', 'Mohl bys prosím vysvětlit Redis?', /prosím/i],
+      ['ro', 'Te rog, ai putea explica Redis?', /te rog/i],
+      ['hr', 'Možeš li molim te objasniti Redis?', /molim te/i],
+      ['sk', 'Mohol by si prosím vysvetliť Redis?', /prosím/i],
+      ['sl', 'Ali bi lahko prosim razložil Redis?', /prosim/i],
+      ['hu', 'Kérlek, el tudnád magyarázni a Redis-t?', /kérlek/i],
+      ['fi', 'Voisitko selittää Redisin?', /voisitko/i],
+      ['et', 'Kas sa saaksid palun selgitada Redis?', /palun/i],
+      ['lv', 'Vai tu varētu lūdzu paskaidrot Redis?', /lūdzu/i],
+      ['lt', 'Ar galėtum prašau paaiškinti Redis?', /prašau/i],
+      ['ga', 'An bhféadfá Redis a mhíniú le do thoil?', /le do thoil/i],
+      ['mt', "Tista' tispjega Redis jekk jogħġbok?", /jekk jogħġbok/i],
+      ['el', 'Θα μπορούσες να μου εξηγήσεις το Redis, παρακαλώ;', /παρακαλώ/i],
+      ['bg', 'Бихте ли обяснили Redis, моля?', /моля/i],
+    ] as const)(
+      'Then it removes the filler phrase for language %s',
+      (lang, input, removedPattern) => {
+        const result = cleanFiller(input, { languages: [lang] })
+        expect(result.text).not.toMatch(removedPattern)
+        expect(result.tokensSaved).toBeGreaterThan(0)
+        expect(result.applied).toBe(true)
+      },
+    )
   })
 
   describe('When a preserve list is provided containing a word in the text', () => {
@@ -34,6 +55,32 @@ describe('Given the cleanFiller strategy', () => {
       const result = cleanFiller(input, { mode: 'detect', languages: ['fr'] })
       expect(result.text).toBe(input)
       expect(result.applied).toBe(true)
+    })
+  })
+
+  describe('When called with a filler-heavy French prompt using new patterns', () => {
+    test('Then it removes greeting, hope-well, and would-possible phrases', () => {
+      const input =
+        "Bonjour ! J'espère sincèrement que tu vas très bien aujourd'hui. Serait-il possible de bien vouloir m'expliquer ce que fait buildChartPath ?"
+      const result = cleanFiller(input, { languages: ['fr'] })
+      expect(result.applied).toBe(true)
+      expect(result.patternsMatched).toContain('fr-greet-hi')
+      expect(result.patternsMatched).toContain('fr-hope-well')
+      expect(result.patternsMatched).toContain('fr-would-possible')
+      expect(result.tokensSaved).toBeGreaterThan(10)
+      expect(result.text).not.toMatch(/bonjour/i)
+      expect(result.text).not.toMatch(/j'espère/i)
+      expect(result.text).not.toMatch(/serait.il possible/i)
+    })
+
+    test('Then it removes sincèrement/vraiment adverb fillers', () => {
+      const result = cleanFiller('Je voudrais sincèrement comprendre.', { languages: ['fr'] })
+      expect(result.text).not.toMatch(/sincèrement/i)
+    })
+
+    test('Then it removes si tu en as l énergie phrase', () => {
+      const result = cleanFiller("Explique-moi si tu en as l'énergie.", { languages: ['fr'] })
+      expect(result.text).not.toMatch(/si tu en as/i)
     })
   })
 

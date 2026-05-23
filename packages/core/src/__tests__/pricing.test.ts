@@ -8,7 +8,6 @@ describe('Given the computeCost function', () => {
         input_tokens: 1000,
         output_tokens: 500,
       })
-      // input: 1000 * 3/1M = 0.003, output: 500 * 15/1M = 0.0075 → 0.0105
       expect(cost).toBeCloseTo(0.0105, 4)
     })
   })
@@ -28,7 +27,10 @@ describe('Given the computeCost function', () => {
   describe('When called with an unknown provider', () => {
     test('Then it returns 0', () => {
       expect(
-        computeCost('unknown' as 'anthropic', 'unknown-model', { input_tokens: 100, output_tokens: 50 }),
+        computeCost('unknown' as 'anthropic', 'unknown-model', {
+          input_tokens: 100,
+          output_tokens: 50,
+        }),
       ).toBe(0)
     })
   })

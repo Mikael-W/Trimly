@@ -1,10 +1,10 @@
 import { Command } from 'commander'
-import { cmdInit } from './commands/init.js'
-import { cmdStats } from './commands/stats.js'
-import { cmdDashboard } from './commands/dashboard.js'
 import { cmdClear } from './commands/clear.js'
+import { cmdDashboard } from './commands/dashboard.js'
 import { cmdExport } from './commands/export.js'
 import { cmdImportBrowser } from './commands/import-browser.js'
+import { cmdInit } from './commands/init.js'
+import { cmdStats } from './commands/stats.js'
 
 const program = new Command()
   .name('trimly')
@@ -21,7 +21,7 @@ program
   .description('Show token usage and cost statistics')
   .option('--db <path>', 'Custom database path')
   .option('--days <n>', 'Number of days to show', '30')
-  .action((opts) => cmdStats({ db: opts.db, days: parseInt(opts.days, 10) }))
+  .action((opts) => cmdStats({ db: opts.db, days: Number.parseInt(opts.days, 10) }))
 
 program
   .command('dashboard')

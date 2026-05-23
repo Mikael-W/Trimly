@@ -16,7 +16,11 @@ export const EN_FILLER_PATTERNS: FillerPattern[] = [
   { id: 'en-very', pattern: /\bvery\b/gi, replace: '' },
   { id: 'en-nutshell', pattern: /\bin a nutshell\b/gi, replace: '' },
   { id: 'en-greet', pattern: /^(hello|hi|hey)[,!]?\s*/gi, replace: '' },
-  { id: 'en-hope', pattern: /\bi hope (you are|you're|this is) (doing well|helpful|okay|fine)\b/gi, replace: '' },
+  {
+    id: 'en-hope',
+    pattern: /\bi hope (you are|you're|this is) (doing well|helpful|okay|fine)\b/gi,
+    replace: '',
+  },
   { id: 'en-feel-free', pattern: /\bfeel free to\b/gi, replace: '' },
   { id: 'en-dont-hesitate', pattern: /\bdon't hesitate to\b/gi, replace: '' },
   { id: 'en-if-possible', pattern: /\bif possible\b/gi, replace: '' },

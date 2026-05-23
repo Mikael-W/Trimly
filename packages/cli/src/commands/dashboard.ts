@@ -1,5 +1,5 @@
-import { spawn } from 'cross-spawn'
 import { createServer } from 'node:net'
+import { spawn } from 'cross-spawn'
 import kleur from 'kleur'
 
 const PORT = 3737

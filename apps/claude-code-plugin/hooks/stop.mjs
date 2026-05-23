@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
 
 async function main() {
@@ -12,7 +12,8 @@ async function main() {
   if (!session_id) process.exit(0)
 
   try {
-    const pluginRoot = process.env['CLAUDE_PLUGIN_ROOT'] ?? join(homedir(), '.claude', 'plugins', 'trimly')
+    const pluginRoot =
+      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
     let core
     try {
       core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
@@ -22,13 +23,11 @@ async function main() {
 
     const { computeCost, createStorage, getDefaultDbPath } = core
 
-    // Parse transcript to get real usage
     const usage = await extractUsageFromTranscript(transcript_path)
 
-    const dbPath = process.env['TRIMLY_DB_PATH'] ?? getDefaultDbPath()
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
-    // Find the pending event for this session
     const pending = await storage.queryEvents({ session_id, status: 'pending', limit: 1 })
 
     if (pending.length > 0) {
@@ -43,8 +42,13 @@ async function main() {
         cache_creation_input_tokens: usage.cache_creation_input_tokens,
       })
 
+      const totalInput =
+        (usage.input_tokens ?? 0) +
+        (usage.cache_read_input_tokens ?? 0) +
+        (usage.cache_creation_input_tokens ?? 0)
+
       await storage.updateEvent(event.id, {
-        tokens_input: usage.input_tokens,
+        tokens_input: totalInput,
         tokens_output: usage.output_tokens,
         tokens_cache_read: usage.cache_read_input_tokens ?? 0,
         tokens_cache_write: usage.cache_creation_input_tokens ?? 0,
@@ -56,7 +60,7 @@ async function main() {
 
     await storage.close()
   } catch (err) {
-    if (process.env['TRIMLY_DEBUG']) {
+    if (process.env.TRIMLY_DEBUG) {
       process.stderr.write(`[Trimly stop error] ${err}\n`)
     }
   }
@@ -71,36 +75,21 @@ async function extractUsageFromTranscript(transcriptPath) {
     const raw = await readFile(transcriptPath, 'utf8')
     const lines = raw.trim().split('\n').filter(Boolean)
 
-    // Find the last assistant message with usage
     for (let i = lines.length - 1; i >= 0; i--) {
       try {
         const msg = JSON.parse(lines[i])
-        if (msg.role === 'assistant' && msg.usage) {
-          return {
-            input_tokens: msg.usage.input_tokens ?? 0,
-            output_tokens: msg.usage.output_tokens ?? 0,
-            cache_read_input_tokens: msg.usage.cache_read_input_tokens ?? 0,
-            cache_creation_input_tokens: msg.usage.cache_creation_input_tokens ?? 0,
-            duration_ms: null,
-          }
+        const usage = msg.message?.usage ?? msg.usage
+        if (!usage) continue
+        return {
+          input_tokens: usage.input_tokens ?? 0,
+          output_tokens: usage.output_tokens ?? 0,
+          cache_read_input_tokens: usage.cache_read_input_tokens ?? 0,
+          cache_creation_input_tokens: usage.cache_creation_input_tokens ?? 0,
+          duration_ms: null,
         }
-        // Also handle API response format
-        if (msg.type === 'message' && msg.usage) {
-          return {
-            input_tokens: msg.usage.input_tokens ?? 0,
-            output_tokens: msg.usage.output_tokens ?? 0,
-            cache_read_input_tokens: msg.usage.cache_read_input_tokens ?? 0,
-            cache_creation_input_tokens: msg.usage.cache_creation_input_tokens ?? 0,
-            duration_ms: null,
-          }
-        }
-      } catch {
-        continue
-      }
+      } catch {}
     }
-  } catch {
-    // transcript not readable
-  }
+  } catch {}
 
   return defaultUsage()
 }

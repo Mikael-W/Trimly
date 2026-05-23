@@ -1,9 +1,9 @@
-import { describe, test, expect, beforeEach } from 'vitest'
-import { execa } from 'execa'
 import { mkdtemp } from 'node:fs/promises'
-import { join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { LibsqlStorage } from '@trimly/core'
+import { execa } from 'execa'
+import { beforeEach, describe, expect, test } from 'vitest'
 
 const HOOK_SUBMIT = join(import.meta.dirname, '../user-prompt-submit.mjs')
 const HOOK_STOP = join(import.meta.dirname, '../stop.mjs')
@@ -33,11 +33,7 @@ describe('Given a pending event in the database and a transcript with token usag
         dbPath,
       )
 
-      await runHook(
-        HOOK_STOP,
-        { session_id: 'stop-sess-1', transcript_path: TRANSCRIPT },
-        dbPath,
-      )
+      await runHook(HOOK_STOP, { session_id: 'stop-sess-1', transcript_path: TRANSCRIPT }, dbPath)
 
       const storage = new LibsqlStorage(dbPath)
       await storage.init()

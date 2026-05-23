@@ -3,7 +3,7 @@ import type { StatsResult } from '@trimly/core'
 
 const { t } = useI18n()
 
-useHead({ title: t('overview.title') + ' — Trimly' })
+useHead({ title: `${t('overview.title')} — Trimly` })
 
 const period = ref<'today' | '7d' | '30d' | 'all'>('30d')
 const periods = ['today', '7d', '30d', 'all'] as const
@@ -11,19 +11,23 @@ const periods = ['today', '7d', '30d', 'all'] as const
 const { data: stats } = useStats(period)
 const { data: timeline } = useFetch<{ date: string; cost: number }[]>('/api/timeline', {
   query: computed(() => ({
-    days: period.value === 'all' ? 365 : period.value === 'today' ? 1 : period.value === '7d' ? 7 : 30,
+    days:
+      period.value === 'all' ? 365 : period.value === 'today' ? 1 : period.value === '7d' ? 7 : 30,
   })),
   watch: [period],
 })
 
-const s = computed<StatsResult>(() => stats.value ?? {
-  totalRequests: 0,
-  totalTokensInput: 0,
-  totalTokensOutput: 0,
-  totalCostUsd: 0,
-  totalSavedUsd: 0,
-  byModel: {},
-})
+const s = computed<StatsResult>(
+  () =>
+    stats.value ?? {
+      totalRequests: 0,
+      totalTokensInput: 0,
+      totalTokensOutput: 0,
+      totalCostUsd: 0,
+      totalSavedUsd: 0,
+      byModel: {},
+    },
+)
 
 const CHART_W = 600
 const CHART_H = 100
@@ -44,6 +48,7 @@ const modelEntries = computed(() => {
     }))
 })
 
+const sparklineValues = computed(() => (timeline.value ?? []).slice(-7).map((d) => d.cost))
 </script>
 
 <template>
@@ -72,6 +77,11 @@ const modelEntries = computed(() => {
       />
       <BaseBigNumber :value="s.totalRequests" :label="t('stats.totalRequests')" />
       <BaseBigNumber :value="fmtCost(s.totalSavedUsd)" :label="t('stats.totalSaved')" positive />
+    </div>
+
+    <div v-if="sparklineValues.length > 1" class="sparkline-row">
+      <span class="sparkline-label-text">7-day cost trend</span>
+      <BaseSparkline :values="sparklineValues" :width="120" :height="28" />
     </div>
 
     <div class="card">
@@ -253,5 +263,20 @@ const modelEntries = computed(() => {
   border-radius: 2px;
   transition: width 0.4s ease;
   min-width: 4px;
+}
+
+.sparkline-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: -1rem;
+}
+
+.sparkline-label-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 </style>

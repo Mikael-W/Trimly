@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { countTokens } from '../../lib/tokenizer-browser.js'
 import { cleanFiller, detectFillerSavings } from '../../lib/cleanFiller-browser.js'
 import { estimateCost } from '../../lib/pricing-browser.js'
+import { countTokens } from '../../lib/tokenizer-browser.js'
 import type { claudeAiAdapter } from '../sites/claude-ai-adapter.js'
 
 const props = defineProps<{
@@ -17,12 +17,16 @@ const originalText = ref('')
 const tokensOptimized = ref(0)
 
 let stopObserving: (() => void) | null = null
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 function handleInput(text: string) {
-  tokens.value = countTokens(text)
-  costUSD.value = estimateCost(tokens.value)
-  const saved = detectFillerSavings(text)
-  savingsPct.value = tokens.value > 0 ? Math.round((saved / tokens.value) * 100) : 0
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    tokens.value = countTokens(text)
+    costUSD.value = estimateCost(tokens.value)
+    const saved = detectFillerSavings(text)
+    savingsPct.value = tokens.value > 0 ? Math.round((saved / tokens.value) * 100) : 0
+  }, 200)
 }
 
 function openOptimize() {
@@ -58,7 +62,10 @@ onMounted(() => {
   observer.observe(document.body, { childList: true, subtree: true })
 })
 
-onUnmounted(() => stopObserving?.())
+onUnmounted(() => {
+  stopObserving?.()
+  if (debounceTimer) clearTimeout(debounceTimer)
+})
 </script>
 
 <template>

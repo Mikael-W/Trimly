@@ -7,11 +7,14 @@ describe('Given the countTokens function', () => {
       ['anthropic', 'claude-sonnet-4-6', 'Hello world'],
       ['openai', 'gpt-4o', 'Hello world'],
       ['mistral', 'mistral-large', 'Hello world'],
-    ] as const)('Then it returns a positive count within range for %s/%s', (provider, model, text) => {
-      const t = countTokens(provider, model, text)
-      expect(t).toBeGreaterThan(0)
-      expect(t).toBeLessThan(20)
-    })
+    ] as const)(
+      'Then it returns a positive count within range for %s/%s',
+      (provider, model, text) => {
+        const t = countTokens(provider, model, text)
+        expect(t).toBeGreaterThan(0)
+        expect(t).toBeLessThan(20)
+      },
+    )
   })
 
   describe('When called with an empty string', () => {

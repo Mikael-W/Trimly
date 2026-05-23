@@ -1,9 +1,6 @@
 export type Provider = 'anthropic' | 'openai' | 'mistral'
 
-export type AnthropicModel =
-  | 'claude-opus-4-7'
-  | 'claude-sonnet-4-6'
-  | 'claude-haiku-4-5'
+export type AnthropicModel = 'claude-opus-4-7' | 'claude-sonnet-4-6' | 'claude-haiku-4-5'
 
 export type OpenAIModel = 'gpt-4o' | 'gpt-4o-mini' | 'o3' | 'o3-mini'
 
