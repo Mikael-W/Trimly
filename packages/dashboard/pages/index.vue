@@ -2,6 +2,7 @@
 import type { StatsResult } from '@trimly/core'
 
 const { t } = useI18n()
+const { fmtCost } = useCurrency()
 
 useHead({ title: `${t('overview.title')} — Trimly` })
 
@@ -43,7 +44,7 @@ const modelEntries = computed(() => {
     .map(([model, v]) => ({
       model,
       requests: v.requests,
-      costStr: `$${v.cost.toFixed(4)}`,
+      costStr: fmtCost(v.cost),
       pct: Math.round((v.cost / maxCost) * 100),
     }))
 })

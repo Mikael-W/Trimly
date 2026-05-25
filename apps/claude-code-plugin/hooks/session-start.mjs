@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-import { homedir } from 'node:os'
-import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
+import { getCore } from './shared/storage.mjs'
 
 async function main() {
   const input = await readStdinJson()
@@ -11,22 +10,15 @@ async function main() {
   if (!session_id) process.exit(0)
 
   try {
-    const pluginRoot =
-      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
-    let core
-    try {
-      core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
-    } catch {
-      core = await import('@trimly/core')
-    }
-
-    const { createStorage, getDefaultDbPath } = core
+    const core = await getCore()
+    const { createStorage, getDefaultDbPath, resolveAgent } = core
+    const adapter = resolveAgent(process.env.TRIMLY_AGENT, process.env)
     const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
     await storage.upsertSession({
       id: session_id,
-      source: 'claude-code',
+      source: adapter.source,
       started_at: Date.now(),
       cwd: cwd || null,
     })

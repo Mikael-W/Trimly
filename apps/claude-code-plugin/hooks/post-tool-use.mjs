@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 import { randomUUID } from 'node:crypto'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
+import { getCore } from './shared/storage.mjs'
 
 async function main() {
   const input = await readStdinJson()
@@ -12,18 +11,10 @@ async function main() {
   if (!session_id || !tool_name) process.exit(0)
 
   try {
-    const pluginRoot =
-      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
-    let core
-    try {
-      core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
-    } catch {
-      core = await import('@trimly/core')
-    }
-
-    const { computeCost, createStorage, getDefaultDbPath } = core
-    const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
-    const provider = 'anthropic'
+    const core = await getCore()
+    const { computeCost, createStorage, getDefaultDbPath, resolveAgent } = core
+    const adapter = resolveAgent(process.env.TRIMLY_AGENT, process.env)
+    const { provider, model } = adapter.resolveModel(process.env)
 
     const usage = tool_response?.usage ?? {}
     const tokensUsed = (usage.input_tokens ?? 0) + (usage.output_tokens ?? 0)

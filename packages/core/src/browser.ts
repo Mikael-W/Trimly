@@ -2,7 +2,7 @@ export * from './types/index.js'
 
 export { countTokensBrowser as countTokens } from './tokenizer/browser.js'
 
-export { computeCost, formatCost } from './pricing/index.js'
+export { computeCost, formatCost, convertCost, DEFAULT_USD_TO_EUR } from './pricing/index.js'
 
 export * from './strategies/index.js'
 

@@ -1,18 +1,19 @@
 <script setup lang="ts">
 const { t, locale, locales, setLocale } = useI18n()
 const { theme, apply: applyTheme } = useTheme()
+const { currency, usdToEur, setCurrency, setRate } = useCurrency()
 
 useHead({ title: `${t('settings.title')} — Trimly` })
 
-const currency = ref<'USD' | 'EUR'>('USD')
+const rateInput = ref(String(usdToEur.value))
 const dbPath = ref(
   typeof window !== 'undefined' ? (localStorage.getItem('trimly.dbPath') ?? '') : '',
 )
 const saved = ref(false)
 
 function save() {
+  setRate(Number(rateInput.value))
   if (typeof window !== 'undefined') {
-    localStorage.setItem('trimly.currency', currency.value)
     localStorage.setItem('trimly.dbPath', dbPath.value)
   }
   saved.value = true
@@ -22,8 +23,8 @@ function save() {
 }
 
 onMounted(() => {
+  rateInput.value = String(usdToEur.value)
   if (typeof window !== 'undefined') {
-    currency.value = (localStorage.getItem('trimly.currency') as 'USD' | 'EUR') ?? 'USD'
     dbPath.value = localStorage.getItem('trimly.dbPath') ?? ''
   }
 })
@@ -78,11 +79,26 @@ onMounted(() => {
             :key="c"
             class="toggle-btn"
             :class="{ 'toggle-btn--active': currency === c }"
-            @click="currency = c as 'USD' | 'EUR'"
+            @click="setCurrency(c as 'USD' | 'EUR')"
           >
             {{ c }}
           </button>
         </div>
+      </div>
+
+      <div v-if="currency === 'EUR'" class="setting-row setting-row--column">
+        <div class="setting-label-group">
+          <span class="setting-label">{{ t('settings.fxRate') }}</span>
+          <span class="setting-desc">{{ t('settings.fxRateDesc') }}</span>
+        </div>
+        <input
+          v-model="rateInput"
+          type="number"
+          step="0.01"
+          min="0"
+          class="setting-input"
+          placeholder="0.92"
+        />
       </div>
 
       <div class="setting-row setting-row--column">

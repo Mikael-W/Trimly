@@ -1,16 +1,12 @@
 #!/usr/bin/env node
-import { createHash, randomUUID } from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 import { readFile, unlink, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
+import { getCore } from './shared/storage.mjs'
 
 const PENDING_FILE = join(homedir(), '.trimly', '.pending.json')
-
-function promptHash(prompt) {
-  return createHash('sha1').update(prompt).digest('hex').slice(0, 12)
-}
-
 const PENDING_TTL_MS = 5 * 60_000
 
 async function savePending(original, lighter) {
@@ -49,24 +45,26 @@ function cleanupSuggestion(text) {
   return r.replace(/^([a-zàâéèêëîïôùûç])/, (c) => c.toUpperCase())
 }
 
+async function loadConfig() {
+  const configPath = join(homedir(), '.trimly', 'config.json')
+  try {
+    return JSON.parse(await readFile(configPath, 'utf8'))
+  } catch {
+    return {
+      verbose: false,
+      agent: 'auto',
+      optimize: { mode: 'advisor' },
+      filler: { enabled: true, languages: ['fr', 'en'], threshold_pct: 20 },
+    }
+  }
+}
+
 async function main() {
   const input = await readStdinJson()
   if (!input) process.exit(0)
 
-  const { session_id = '', transcript_path = '', cwd = '', prompt = '' } = input
-
-  if (!prompt) process.exit(0)
-
   try {
-    const pluginRoot =
-      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
-    let core
-    try {
-      core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
-    } catch {
-      core = await import('@trimly/core')
-    }
-
+    const core = await getCore()
     const {
       countTokens,
       computeCost,
@@ -75,26 +73,35 @@ async function main() {
       reducePrompt,
       createStorage,
       getDefaultDbPath,
+      resolveAgent,
     } = core
-    const model = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
-    const provider = 'anthropic'
-    const config = await loadConfig()
 
+    const config = await loadConfig()
+    const adapter = resolveAgent(process.env.TRIMLY_AGENT ?? config.agent, process.env)
+    const payload = adapter.parsePayload('UserPromptSubmit', input)
+    const prompt = payload.prompt ?? ''
+    const sessionId = payload.sessionId ?? ''
+    if (!prompt) process.exit(0)
+
+    // 'off' < advisor.false back-compat. 'advisor' | 'auto' | 'off'.
+    const mode = config.optimize?.mode ?? (config.advisor === false ? 'off' : 'advisor')
+    const { provider, model } = adapter.resolveModel(process.env)
+
+    // oui/non confirmation flow (advisor mode only)
     const trimmed = prompt.trim().toLowerCase()
-    if (trimmed === 'oui' || trimmed === 'non') {
+    if (mode === 'advisor' && (trimmed === 'oui' || trimmed === 'non')) {
       const pending = await readPending()
       if (pending) {
         await clearPending()
         const chosen = trimmed === 'oui' ? pending.lighter : pending.original
         const label = trimmed === 'oui' ? 'allégée' : 'originale'
-        process.stdout.write(
-          JSON.stringify({
-            hookSpecificOutput: {
-              hookEventName: 'UserPromptSubmit',
-              additionalContext: `[Trimly] L'utilisateur a choisi la version ${label}. Traite ce message comme si l'utilisateur avait envoyé : "${chosen}". Réponds directement à cette demande, ignore le "${trimmed}".`,
-            },
-          }),
+        const out = adapter.formatOutput(
+          {
+            context: `[Trimly] L'utilisateur a choisi la version ${label}. Traite ce message comme si l'utilisateur avait envoyé : "${chosen}". Réponds directement à cette demande, ignore le "${trimmed}".`,
+          },
+          'UserPromptSubmit',
         )
+        if (out) process.stdout.write(out)
         process.exit(0)
       }
     }
@@ -105,19 +112,18 @@ async function main() {
       languages: config.filler?.languages,
     })
     const costUsd = computeCost(provider, model, { input_tokens: tokensInput, output_tokens: 0 })
-
-    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
-    const storage = await createStorage(dbPath)
     const costSavedUsd =
       fillerResult.tokensSaved > 0
         ? computeCost(provider, model, { input_tokens: fillerResult.tokensSaved, output_tokens: 0 })
         : 0
 
+    const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
+    const storage = await createStorage(dbPath)
     await storage.recordEvent({
       id: randomUUID(),
-      session_id,
+      session_id: sessionId,
       timestamp: Date.now(),
-      source: 'claude-code',
+      source: adapter.source,
       provider,
       model,
       tokens_input: tokensInput,
@@ -131,26 +137,29 @@ async function main() {
     })
     await storage.close()
 
+    // No suggestion when tracking-only or the agent can't surface prompt advice.
+    if (mode === 'off' || !adapter.capabilities.promptOptimization) process.exit(0)
+
     const savingsPct =
       tokensInput > 0 ? Math.round((fillerResult.tokensSaved / tokensInput) * 100) : 0
 
-    if (config.advisor && fillerResult.applied && savingsPct >= config.filler.threshold_pct) {
+    if (fillerResult.applied && savingsPct >= (config.filler?.threshold_pct ?? 20)) {
       const cleaned = cleanFiller(prompt, { mode: 'apply', languages: config.filler?.languages })
       const suggestion = cleanupSuggestion(cleaned.text).slice(0, 200)
-      await savePending(prompt, suggestion)
-      process.stdout.write(
-        JSON.stringify({
-          hookSpecificOutput: {
-            hookEventName: 'UserPromptSubmit',
-            additionalContext: `[Trimly advisor] ${tokensInput} tokens (~$${costUsd.toFixed(5)}) · ${savingsPct}% de filler détecté.\nVersion allégée : "${suggestion}"\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n💡 Trimly: ${tokensInput} → ${tokensInput - fillerResult.tokensSaved} tokens (−${fillerResult.tokensSaved} · −$${costSavedUsd.toFixed(5)}) · Tape \`oui\` pour la version allégée ou \`non\` pour l'original.`,
-          },
-        }),
-      )
+      let context
+      if (mode === 'auto') {
+        context = `[Trimly] Version optimisée (−${fillerResult.tokensSaved} tokens) : "${suggestion}". Réponds directement à cette version allégée de la demande.`
+      } else {
+        await savePending(prompt, suggestion)
+        context = `[Trimly advisor] ${tokensInput} tokens (~$${costUsd.toFixed(5)}) · ${savingsPct}% de filler détecté.\nVersion allégée : "${suggestion}"\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n💡 Trimly: ${tokensInput} → ${tokensInput - fillerResult.tokensSaved} tokens (−${fillerResult.tokensSaved} · −$${costSavedUsd.toFixed(5)}) · Tape \`oui\` pour la version allégée ou \`non\` pour l'original.`
+      }
+      const out = adapter.formatOutput({ context }, 'UserPromptSubmit')
+      if (out) process.stdout.write(out)
       process.exit(0)
     }
 
     const analysis = analyzePrompt(prompt, tokensInput)
-    if (config.advisor && analysis.tip) {
+    if (analysis.tip) {
       const reduced = reducePrompt(prompt, analysis)
       const reducedTokens = countTokens(provider, model, reduced)
       const savedTokens = tokensInput - reducedTokens
@@ -158,15 +167,15 @@ async function main() {
         input_tokens: Math.max(0, savedTokens),
         output_tokens: 0,
       })
-      await savePending(prompt, reduced)
-      process.stdout.write(
-        JSON.stringify({
-          hookSpecificOutput: {
-            hookEventName: 'UserPromptSubmit',
-            additionalContext: `[Trimly advisor] ${analysis.tip}\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n⚠️ Trimly: ${tokensInput} → ${reducedTokens} tokens (−${savedTokens} · −$${savedCost.toFixed(5)}) · ${analysis.tip.split('.')[0]}. Tape \`oui\` pour la version réduite ou \`non\` pour l'original.`,
-          },
-        }),
-      )
+      let context
+      if (mode === 'auto') {
+        context = `[Trimly] Version réduite (−${savedTokens} tokens) : "${reduced}". Réponds directement à cette version.`
+      } else {
+        await savePending(prompt, reduced)
+        context = `[Trimly advisor] ${analysis.tip}\nRéponds UNIQUEMENT avec cette ligne exacte, rien d'autre :\n⚠️ Trimly: ${tokensInput} → ${reducedTokens} tokens (−${savedTokens} · −$${savedCost.toFixed(5)}) · ${analysis.tip.split('.')[0]}. Tape \`oui\` pour la version réduite ou \`non\` pour l'original.`
+      }
+      const out = adapter.formatOutput({ context }, 'UserPromptSubmit')
+      if (out) process.stdout.write(out)
     }
   } catch (err) {
     if (process.env.TRIMLY_DEBUG) {
@@ -175,19 +184,6 @@ async function main() {
   }
 
   process.exit(0)
-}
-
-async function loadConfig() {
-  const configPath = join(homedir(), '.trimly', 'config.json')
-  try {
-    return JSON.parse(await readFile(configPath, 'utf8'))
-  } catch {
-    return {
-      verbose: false,
-      advisor: true,
-      filler: { enabled: true, languages: ['fr', 'en'], threshold_pct: 20 },
-    }
-  }
 }
 
 main()

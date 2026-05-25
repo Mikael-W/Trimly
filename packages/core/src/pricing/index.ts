@@ -31,11 +31,26 @@ export function computeCost(provider: Provider, model: string, usage: TokenUsage
   )
 }
 
-export function formatCost(cost: number, currency: 'USD' | 'EUR', locale = 'en-US'): string {
+export function formatCost(
+  cost: number,
+  currency: 'USD' | 'EUR',
+  locale = 'en-US',
+  fractionDigits = 4,
+): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    minimumFractionDigits: 4,
-    maximumFractionDigits: 4,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   }).format(cost)
+}
+
+export const DEFAULT_USD_TO_EUR = 0.92
+
+export function convertCost(
+  costUsd: number,
+  currency: 'USD' | 'EUR',
+  usdToEur = DEFAULT_USD_TO_EUR,
+): number {
+  return currency === 'EUR' ? costUsd * usdToEur : costUsd
 }

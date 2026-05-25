@@ -30,6 +30,8 @@
   "settings.title": "Settings",
   "settings.language": "Language",
   "settings.currency": "Currency",
+  "settings.fxRate": "USD → EUR rate",
+  "settings.fxRateDesc": "Costs are tracked in USD; this rate converts them to EUR for display.",
   "settings.dbPath": "Database path",
   "settings.dbPathDesc": "Path to the SQLite file (default: ~/.trimly/events.db)",
   "settings.theme": "Theme",
