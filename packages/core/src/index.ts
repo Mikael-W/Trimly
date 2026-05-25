@@ -2,7 +2,7 @@ export * from './types/index.js'
 
 export { countTokens } from './tokenizer/index.js'
 
-export { computeCost, formatCost } from './pricing/index.js'
+export { computeCost, formatCost, convertCost, DEFAULT_USD_TO_EUR } from './pricing/index.js'
 
 export { createStorage } from './storage/factory.js'
 export type { TrimlyStorage } from './storage/types.js'
@@ -10,6 +10,8 @@ export { LibsqlStorage } from './storage/adapters/libsql.js'
 export { NodeSqliteStorage } from './storage/adapters/node-sqlite.js'
 
 export * from './strategies/index.js'
+
+export * from './agents/index.js'
 
 export {
   getTrimlyDir,

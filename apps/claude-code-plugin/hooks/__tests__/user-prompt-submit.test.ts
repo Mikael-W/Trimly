@@ -10,7 +10,7 @@ const HOOK = join(import.meta.dirname, '../user-prompt-submit.mjs')
 async function runHook(input: object, dbPath: string): Promise<{ stdout: string; stderr: string }> {
   const result = await execa('node', [HOOK], {
     input: JSON.stringify(input),
-    env: { ...process.env, TRIMLY_DB_PATH: dbPath, TRIMLY_DEBUG: '1' },
+    env: { ...process.env, TRIMLY_DB_PATH: dbPath, TRIMLY_DEBUG: '1', TRIMLY_AGENT: 'claude-code' },
     reject: false,
   })
   return { stdout: result.stdout, stderr: result.stderr }

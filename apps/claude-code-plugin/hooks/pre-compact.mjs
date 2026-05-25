@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 import { randomUUID } from 'node:crypto'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
 import { readStdinJson } from './shared/stdin.mjs'
+import { getCore } from './shared/storage.mjs'
 
 async function main() {
   const input = await readStdinJson()
@@ -11,16 +10,10 @@ async function main() {
   const { session_id = '' } = input
 
   try {
-    const pluginRoot =
-      process.env.CLAUDE_PLUGIN_ROOT ?? join(homedir(), '.claude', 'plugins', 'trimly')
-    let core
-    try {
-      core = await import(join(pluginRoot, 'node_modules', '@trimly/core', 'dist', 'index.js'))
-    } catch {
-      core = await import('@trimly/core')
-    }
-
-    const { createStorage, getDefaultDbPath } = core
+    const core = await getCore()
+    const { createStorage, getDefaultDbPath, resolveAgent } = core
+    const adapter = resolveAgent(process.env.TRIMLY_AGENT, process.env)
+    const { provider, model } = adapter.resolveModel(process.env)
     const dbPath = process.env.TRIMLY_DB_PATH ?? getDefaultDbPath()
     const storage = await createStorage(dbPath)
 
@@ -28,9 +21,9 @@ async function main() {
       id: randomUUID(),
       session_id: session_id || 'unknown',
       timestamp: Date.now(),
-      source: 'claude-code',
-      provider: 'anthropic',
-      model: process.env.ANTHROPIC_MODEL ?? 'unknown',
+      source: adapter.source,
+      provider,
+      model,
       tokens_input: 0,
       tokens_output: 0,
       cost_usd: 0,

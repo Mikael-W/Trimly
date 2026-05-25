@@ -1,3 +1,5 @@
+import type { AgentId } from '../agents/types.js'
+
 export interface FillerConfig {
   enabled: boolean
   languages: string[]
@@ -24,20 +26,43 @@ export interface StatuslineConfig {
   mode: 'default' | 'compact' | 'verbose'
 }
 
+/**
+ * Prompt-lightening behaviour:
+ * - 'advisor' : show the oui/non suggestion (default, non-intrusive)
+ * - 'auto'    : inject the optimized version without confirmation
+ * - 'off'     : track usage only, no suggestion
+ */
+export interface OptimizeConfig {
+  mode: 'advisor' | 'auto' | 'off'
+}
+
+/** Provider API keys, used to infer provider/model and (later) pricing. */
+export interface ProviderKeys {
+  anthropic?: string
+  openai?: string
+  mistral?: string
+}
+
 export interface TrimlyConfig {
   verbose: boolean
   advisor: boolean
+  /** Host agent: 'auto' detects from env; an explicit id overrides detection. */
+  agent: AgentId | 'auto'
+  optimize: OptimizeConfig
   filler: FillerConfig
   storage: StorageConfig
   currency: 'USD' | 'EUR'
   summary_on_session_end: boolean
   budget?: BudgetConfig
   statusline?: StatuslineConfig
+  keys?: ProviderKeys
 }
 
 export const DEFAULT_CONFIG: TrimlyConfig = {
   verbose: false,
   advisor: true,
+  agent: 'auto',
+  optimize: { mode: 'advisor' },
   filler: {
     enabled: true,
     languages: ['fr', 'en'],

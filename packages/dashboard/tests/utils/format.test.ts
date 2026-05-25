@@ -1,35 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { fmtCost, fmtCost5, fmtRelTime, fmtTokens } from '../../utils/format'
+import { fmtRelTime, fmtTokens } from '../../utils/format'
 
 const NOW = new Date('2025-06-01T12:00:00Z').getTime()
-
-describe('Given fmtCost', () => {
-  describe('When called with zero', () => {
-    test('Then returns $0.0000', () => {
-      expect(fmtCost(0)).toBe('$0.0000')
-    })
-  })
-
-  describe('When called with a decimal value', () => {
-    test('Then rounds to 4 decimal places with $ prefix', () => {
-      expect(fmtCost(0.123456)).toBe('$0.1235')
-    })
-  })
-
-  describe('When called with a whole number', () => {
-    test('Then pads to 4 decimal places', () => {
-      expect(fmtCost(1)).toBe('$1.0000')
-    })
-  })
-})
-
-describe('Given fmtCost5', () => {
-  describe('When called with a small cost', () => {
-    test('Then returns 5 decimal places with $ prefix', () => {
-      expect(fmtCost5(0.00123)).toBe('$0.00123')
-    })
-  })
-})
 
 describe('Given fmtTokens', () => {
   describe('When called with a number below 1000', () => {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const { fmtCost5 } = useCurrency()
 
 useHead({ title: `${t('events.title')} — Trimly` })
 

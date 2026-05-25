@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const { init } = useTheme()
-onMounted(init)
+const { init: initCurrency } = useCurrency()
+onMounted(() => {
+  init()
+  initCurrency()
+})
 </script>
 
 <template>

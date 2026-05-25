@@ -30,6 +30,8 @@
   "settings.title": "Paramètres",
   "settings.language": "Langue",
   "settings.currency": "Devise",
+  "settings.fxRate": "Taux USD → EUR",
+  "settings.fxRateDesc": "Les coûts sont suivis en USD ; ce taux les convertit en EUR pour l'affichage.",
   "settings.dbPath": "Base de données",
   "settings.dbPathDesc": "Chemin vers le fichier SQLite (défaut : ~/.trimly/events.db)",
   "settings.theme": "Thème",

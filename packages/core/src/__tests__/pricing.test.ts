@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { computeCost, formatCost } from '../pricing/index.js'
+import { DEFAULT_USD_TO_EUR, computeCost, convertCost, formatCost } from '../pricing/index.js'
 
 describe('Given the computeCost function', () => {
   describe('When called with Anthropic provider and standard input/output tokens', () => {
@@ -49,6 +49,32 @@ describe('Given the formatCost function', () => {
     test('Then it includes the euro sign', () => {
       const result = formatCost(0.5, 'EUR', 'fr-FR')
       expect(result).toContain('€')
+    })
+  })
+
+  describe('When a custom fraction-digits count is passed', () => {
+    test('Then it formats to that many decimals', () => {
+      const result = formatCost(0.00123, 'USD', 'en-US', 5)
+      expect(result).toContain('0.00123')
+    })
+  })
+})
+
+describe('Given the convertCost function', () => {
+  describe('When the target currency is USD', () => {
+    test('Then it returns the cost unchanged', () => {
+      expect(convertCost(12.34, 'USD')).toBe(12.34)
+      expect(convertCost(12.34, 'USD', 0.5)).toBe(12.34)
+    })
+  })
+
+  describe('When the target currency is EUR', () => {
+    test('Then it multiplies the USD cost by the rate', () => {
+      expect(convertCost(10, 'EUR', 0.9)).toBeCloseTo(9, 10)
+    })
+
+    test('Then it uses DEFAULT_USD_TO_EUR when no rate is provided', () => {
+      expect(convertCost(10, 'EUR')).toBeCloseTo(10 * DEFAULT_USD_TO_EUR, 10)
     })
   })
 })
