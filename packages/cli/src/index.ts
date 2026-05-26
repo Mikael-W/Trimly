@@ -9,7 +9,7 @@ import { initLocale, t } from './i18n/index.js'
 
 initLocale()
 
-const program = new Command().name('trimly').description(t('cli.desc')).version('0.2.0')
+const program = new Command().name('trimly').description(t('cli.desc')).version('0.3.0')
 
 program.command('init').description(t('init.desc')).action(cmdInit)
 

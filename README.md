@@ -114,7 +114,7 @@ apps/browser-extension   →  claude.ai token badge + optimize overlay
 ## Coming soon
 
 - **Team Self-Hosted (free, 1–5 users)** — bring your own PostgreSQL or Supabase, get a shared team dashboard.
-- **Trimly Cloud** — managed hosting, SSO, Slack alerts, Anthropic Admin API. [Join the waitlist →](https://trimly.dev) <!-- TODO: real waitlist link -->
+- **Trimly Cloud** — managed hosting, SSO, Slack alerts.
 
 ---
 
