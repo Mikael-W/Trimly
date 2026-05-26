@@ -83,11 +83,9 @@ async function main() {
     const sessionId = payload.sessionId ?? ''
     if (!prompt) process.exit(0)
 
-    // 'off' < advisor.false back-compat. 'advisor' | 'auto' | 'off'.
     const mode = config.optimize?.mode ?? (config.advisor === false ? 'off' : 'advisor')
     const { provider, model } = adapter.resolveModel(process.env)
 
-    // oui/non confirmation flow (advisor mode only)
     const trimmed = prompt.trim().toLowerCase()
     if (mode === 'advisor' && (trimmed === 'oui' || trimmed === 'non')) {
       const pending = await readPending()
@@ -137,7 +135,6 @@ async function main() {
     })
     await storage.close()
 
-    // No suggestion when tracking-only or the agent can't surface prompt advice.
     if (mode === 'off' || !adapter.capabilities.promptOptimization) process.exit(0)
 
     const savingsPct =

@@ -71,7 +71,6 @@ function configLocale(): string | undefined {
   }
 }
 
-/** Resolve the CLI locale: TRIMLY_LOCALE → config.locale → system LANG → en. */
 export function initLocale(explicit?: string): void {
   const candidate = explicit || process.env.TRIMLY_LOCALE || configLocale() || envLocale()
   current = candidate && MESSAGES[candidate] ? candidate : 'en'

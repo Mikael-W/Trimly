@@ -14,10 +14,6 @@ function currentEnv(env?: Env): Env {
   return typeof process !== 'undefined' ? process.env : {}
 }
 
-/**
- * Best-effort detection from environment markers. Config override is
- * authoritative (see resolveAgent) — these markers only kick in for `auto`.
- */
 export function detectAgent(env?: Env): AgentId {
   const e = currentEnv(env)
   if (e.CLAUDECODE === '1' || e.CLAUDE_PLUGIN_ROOT) return 'claude-code'
@@ -31,10 +27,6 @@ export function createAdapter(id: AgentId): AgentAdapter {
   return ADAPTERS[id]
 }
 
-/**
- * Resolve the adapter: explicit config agent wins; otherwise auto-detect from
- * env, falling back to Claude Code when nothing matches.
- */
 export function resolveAgent(configAgent?: AgentId | 'auto', env?: Env): AgentAdapter {
   if (configAgent && configAgent !== 'auto') return createAdapter(configAgent)
   const detected = detectAgent(env)

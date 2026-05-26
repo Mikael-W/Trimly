@@ -28,7 +28,7 @@ You pay per token. But nothing tells you, in the moment, what a session is actua
 - 📊 **Monthly budget** with overshoot ETA
 - ✂️ **Prompt slimming** — filler detection across 24 EU languages
 - 🗂️ **Persistent history** + local dashboard
-- 🧩 **Multi-provider** (Claude · OpenAI · Mistral) · **multi-agent** (Claude Code · Codex · Cursor)
+- 🧩 **Multi-provider** (Claude · OpenAI) · **multi-agent** (Claude Code · Codex · Cursor)
 - 🔒 **Local-first** — no account, no cloud, no telemetry
 
 ---
@@ -79,7 +79,7 @@ node ~/.claude/plugins/trimly/integrations/cursor-setup.mjs
 
 ## What it does
 
-**💰 Real cost, in real time.** Every prompt, tool call, and edit is priced as it happens — Anthropic, OpenAI, and Mistral pricing built in.
+**💰 Real cost, in real time.** Every prompt, tool call, and edit is priced as it happens — Anthropic and OpenAI pricing built in.
 
 **✂️ Prompt slimming.** Trimly spots filler across **24 EU languages**, long code blocks, and stack traces, and offers a lighter version before you spend tokens. Choose how: `advisor` (suggest, accept with `oui`), `auto` (apply without asking), or `off` (track only).
 

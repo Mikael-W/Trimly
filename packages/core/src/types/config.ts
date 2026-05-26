@@ -26,17 +26,10 @@ export interface StatuslineConfig {
   mode: 'default' | 'compact' | 'verbose'
 }
 
-/**
- * Prompt-lightening behaviour:
- * - 'advisor' : show the oui/non suggestion (default, non-intrusive)
- * - 'auto'    : inject the optimized version without confirmation
- * - 'off'     : track usage only, no suggestion
- */
 export interface OptimizeConfig {
   mode: 'advisor' | 'auto' | 'off'
 }
 
-/** Provider API keys, used to infer provider/model and (later) pricing. */
 export interface ProviderKeys {
   anthropic?: string
   openai?: string
@@ -46,13 +39,11 @@ export interface ProviderKeys {
 export interface TrimlyConfig {
   verbose: boolean
   advisor: boolean
-  /** Host agent: 'auto' detects from env; an explicit id overrides detection. */
   agent: AgentId | 'auto'
   optimize: OptimizeConfig
   filler: FillerConfig
   storage: StorageConfig
   currency: 'USD' | 'EUR'
-  /** UI language for the CLI (ISO 639-1). Falls back to $LANG, then 'en'. */
   locale?: string
   summary_on_session_end: boolean
   budget?: BudgetConfig

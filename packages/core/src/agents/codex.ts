@@ -1,11 +1,5 @@
 import type { AdvisorOutput, AgentAdapter, Env } from './types.js'
 
-/**
- * OpenAI Codex CLI. Hook lifecycle and stdin payload field names mirror Claude
- * Code (UserPromptSubmit, Stop, PostToolUse, SessionStart, PreCompact; fields
- * session_id, prompt, tool_name, …). For UserPromptSubmit, Codex adds plain
- * stdout as developer context — which is exactly where we want the advisory.
- */
 export const codexAdapter: AgentAdapter = {
   id: 'codex',
   source: 'codex',

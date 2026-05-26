@@ -1,13 +1,5 @@
 import type { AdvisorOutput, AgentAdapter, Env } from './types.js'
 
-/**
- * Cursor (v1.7+). It exposes `beforeSubmitPrompt` ({ prompt, attachments }) so
- * Trimly can record input cost (Trimly tokenizes the prompt itself), plus
- * action hooks (afterFileEdit, stop, …). Cursor does NOT expose token usage to
- * hooks, so output cost isn't captured and the model name is approximate.
- * promptOptimization stays off until the `user_message` output semantics are
- * confirmed — see the cursor integration notes.
- */
 export const cursorAdapter: AgentAdapter = {
   id: 'cursor',
   source: 'cursor',

@@ -2,7 +2,7 @@
 
 > Tokenization, pricing, currency conversion, local storage, prompt-optimization strategies, and multi-agent adapters for [Trimly](https://github.com/Mikael-W/Trimly).
 
-The engine behind Trimly — token counting and cost computation for Anthropic, OpenAI, and Mistral, a local SQLite store, filler/prompt-slimming strategies in 24 EU languages, and a factory of agent adapters (Claude Code, Codex, Cursor). Used by `@trimly/cli` and the Trimly plugin, but usable standalone.
+The engine behind Trimly — token counting and cost computation for Anthropic and OpenAI, a local SQLite store, filler/prompt-slimming strategies in 24 EU languages, and a factory of agent adapters (Claude Code, Codex, Cursor). Used by `@trimly/cli` and the Trimly plugin, but usable standalone.
 
 ## Install
 

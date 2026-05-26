@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-/**
- * Installs Trimly into Cursor (~/.cursor/hooks.json).
- *
- * Cursor exposes `beforeSubmitPrompt` (the prompt text) and `stop`. Trimly
- * tokenizes the prompt itself, so input cost is tracked even though Cursor does
- * not expose token usage to hooks. Output cost / per-tool cost are not captured
- * on Cursor (no usage data). The hook scripts run with TRIMLY_AGENT=cursor.
- *
- * Run: node integrations/cursor-setup.mjs
- */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -25,7 +15,6 @@ function hook(script, timeout) {
 }
 
 const trimlyHooks = {
-  // Cursor's prompt-submit event → input cost tracking (no advisor yet).
   beforeSubmitPrompt: hook('user-prompt-submit.mjs', 5),
   stop: hook('session-end.mjs', 2),
 }
@@ -35,9 +24,7 @@ async function main() {
   let existing = { version: 1, hooks: {} }
   try {
     existing = JSON.parse(await readFile(HOOKS_FILE, 'utf8'))
-  } catch {
-    // no existing hooks.json
-  }
+  } catch {}
   const merged = {
     version: existing.version ?? 1,
     hooks: { ...existing.hooks, ...trimlyHooks },
