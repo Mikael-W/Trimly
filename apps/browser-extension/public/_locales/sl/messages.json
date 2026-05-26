@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Sledilnik porabe žetonov in optimizator pozivov za Claude Code" },
+  "popup_today": { "message": "Danes" },
+  "popup_month": { "message": "Ta mesec" },
+  "popup_requests": { "message": "zahteve" },
+  "popup_saved": { "message": "Prihranjeno" },
+  "popup_export": { "message": "Izvozi JSON" },
+  "popup_loading": { "message": "Nalaganje…" }
+}

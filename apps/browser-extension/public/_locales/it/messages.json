@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Monitoraggio dell'uso dei token e ottimizzatore di prompt per Claude Code" },
+  "popup_today": { "message": "Oggi" },
+  "popup_month": { "message": "Questo mese" },
+  "popup_requests": { "message": "richieste" },
+  "popup_saved": { "message": "Risparmiato" },
+  "popup_export": { "message": "Esporta JSON" },
+  "popup_loading": { "message": "Caricamento…" }
+}

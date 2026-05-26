@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import type { TrimlyEventInsert } from '@trimly/core'
 import kleur from 'kleur'
+import { t } from '../i18n/index.js'
 import { openStorage } from '../utils/findStorage.js'
 
 interface BrowserEvent {
@@ -27,7 +28,7 @@ export async function cmdImportBrowser(
   const browserEvents: BrowserEvent[] = JSON.parse(raw)
 
   if (!Array.isArray(browserEvents)) {
-    throw new Error('Invalid file format: expected a JSON array')
+    throw new Error(t('import.invalidFormat'))
   }
 
   const storage = await openStorage(options.db)
@@ -60,5 +61,5 @@ export async function cmdImportBrowser(
   }
 
   await storage.close()
-  console.log(kleur.green(`✅ Imported ${inserted} events (${skipped} skipped/duplicate)`))
+  console.log(kleur.green(`✅ ${t('import.done', { n: inserted, m: skipped })}`))
 }

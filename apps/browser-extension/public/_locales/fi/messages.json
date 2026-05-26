@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Tokenien käytön seuranta ja kehotteiden optimointi Claude Codeen" },
+  "popup_today": { "message": "Tänään" },
+  "popup_month": { "message": "Tässä kuussa" },
+  "popup_requests": { "message": "pyyntöä" },
+  "popup_saved": { "message": "Säästetty" },
+  "popup_export": { "message": "Vie JSON" },
+  "popup_loading": { "message": "Ladataan…" }
+}

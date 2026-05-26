@@ -3,6 +3,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { getConfigPath, getTrimlyDir } from '@trimly/core'
 import kleur from 'kleur'
+import { t } from '../i18n/index.js'
 
 const DEFAULT_CONFIG = {
   verbose: false,
@@ -38,13 +39,14 @@ async function wireHooks(): Promise<void> {
   } catch {}
 
   if (settings.hooks) {
-    console.log(kleur.yellow('  Hooks already configured in ~/.claude/settings.json, skipping.'))
+    console.log(kleur.yellow(`  ${t('init.hooksExist')}`))
     return
   }
 
   settings.hooks = buildHooksBlock()
+  await mkdir(join(homedir(), '.claude'), { recursive: true })
   await writeFile(settingsPath, JSON.stringify(settings, null, 2))
-  console.log(kleur.green('✅ Hooks wired in ~/.claude/settings.json'))
+  console.log(kleur.green(`✅ ${t('init.hooksWired')}`))
 }
 
 export async function cmdInit(): Promise<void> {
@@ -54,15 +56,15 @@ export async function cmdInit(): Promise<void> {
   const configPath = getConfigPath()
   try {
     await access(configPath)
-    console.log(kleur.yellow(`Config already exists: ${configPath}`))
+    console.log(kleur.yellow(t('init.configExists', { path: configPath })))
   } catch {
     await writeFile(configPath, JSON.stringify(DEFAULT_CONFIG, null, 2))
-    console.log(kleur.green(`✅ Config created: ${configPath}`))
+    console.log(kleur.green(`✅ ${t('init.configCreated', { path: configPath })}`))
   }
 
   await wireHooks()
 
-  console.log(kleur.green(`✅ Trimly initialized at ${dir}`))
-  console.log(kleur.gray('   Start a Claude Code session to begin tracking.'))
-  console.log(kleur.gray('   Run "trimly stats" or "trimly dashboard" to see your usage.'))
+  console.log(kleur.green(`✅ ${t('init.done', { dir })}`))
+  console.log(kleur.gray(`   ${t('init.hintStart')}`))
+  console.log(kleur.gray(`   ${t('init.hintRun')}`))
 }

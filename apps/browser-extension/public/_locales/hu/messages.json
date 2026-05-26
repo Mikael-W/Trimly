@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Tokenhasználat-követő és promptoptimalizáló a Claude Code-hoz" },
+  "popup_today": { "message": "Ma" },
+  "popup_month": { "message": "Ebben a hónapban" },
+  "popup_requests": { "message": "kérés" },
+  "popup_saved": { "message": "Megtakarítva" },
+  "popup_export": { "message": "JSON exportálása" },
+  "popup_loading": { "message": "Betöltés…" }
+}

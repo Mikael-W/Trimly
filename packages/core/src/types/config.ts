@@ -52,6 +52,8 @@ export interface TrimlyConfig {
   filler: FillerConfig
   storage: StorageConfig
   currency: 'USD' | 'EUR'
+  /** UI language for the CLI (ISO 639-1). Falls back to $LANG, then 'en'. */
+  locale?: string
   summary_on_session_end: boolean
   budget?: BudgetConfig
   statusline?: StatuslineConfig

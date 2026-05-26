@@ -106,8 +106,10 @@ describe('Given the trimly CLI binary', () => {
       ]
       await writeFile(jsonPath, JSON.stringify(events))
 
-      await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], { reject: false })
+      const env = { ...process.env, TRIMLY_LOCALE: 'en' }
+      await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], { env, reject: false })
       const { stdout } = await execa('node', [CLI, 'import-browser', jsonPath, '--db', dbPath], {
+        env,
         reject: false,
       })
       expect(stdout).toContain('0')

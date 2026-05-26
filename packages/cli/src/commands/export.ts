@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import kleur from 'kleur'
+import { t } from '../i18n/index.js'
 import { openStorage } from '../utils/findStorage.js'
 
 interface ExportOptions {
@@ -37,5 +38,5 @@ export async function cmdExport(options: ExportOptions = {}): Promise<void> {
     await writeFile(outPath, JSON.stringify(events, null, 2))
   }
 
-  console.log(kleur.green(`✅ Exported ${events.length} events to ${outPath}`))
+  console.log(kleur.green(`✅ ${t('export.done', { n: events.length, path: outPath })}`))
 }
