@@ -4,7 +4,7 @@
 
 ### See and trim your AI token spend.
 
-**Claude HUD shows you what Claude _does_. Trimly shows you what Claude _costs you_.**
+**Your coding agent bills by the token. Trimly shows you the cost — live — and trims the waste before you pay for it.**
 
 Trimly measures and optimizes your LLM token consumption — right where you prompt: **Claude Code, OpenAI Codex, Cursor**, and claude.ai in your browser. 100% local, open source, multi-provider.
 
@@ -22,17 +22,14 @@ Trimly measures and optimizes your LLM token consumption — right where you pro
 
 You pay per token. But nothing tells you, in the moment, what a session is actually costing — or where the waste is. Trimly puts the number in front of you and trims the fat from your prompts.
 
-| | Claude HUD | **Trimly** |
-|---|:---:|:---:|
-| Context window % used | ✅ | ✅ |
-| **Cost in € / $ — live** | ❌ | ✅ |
-| **Cost per tool call / edit** | ❌ | ✅ |
-| **Monthly budget + overshoot ETA** | ❌ | ✅ |
-| **Filler detection + prompt slimming** (24 EU languages) | ❌ | ✅ |
-| **Persistent history** | ❌ | ✅ |
-| **Multi-provider** (Claude · OpenAI · Mistral) | ❌ | ✅ |
-| **Works across agents** (Claude Code · Codex · Cursor) | ❌ | ✅ |
-| Local-first, no account, no telemetry | — | ✅ |
+**What you get:**
+
+- 💰 **Live cost** in € / $ — every prompt, tool call, and edit
+- 📊 **Monthly budget** with overshoot ETA
+- ✂️ **Prompt slimming** — filler detection across 24 EU languages
+- 🗂️ **Persistent history** + local dashboard
+- 🧩 **Multi-provider** (Claude · OpenAI · Mistral) · **multi-agent** (Claude Code · Codex · Cursor)
+- 🔒 **Local-first** — no account, no cloud, no telemetry
 
 ---
 
