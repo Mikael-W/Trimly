@@ -1,5 +1,6 @@
 import { createInterface } from 'node:readline'
 import kleur from 'kleur'
+import { t } from '../i18n/index.js'
 import { openStorage } from '../utils/findStorage.js'
 
 interface ClearOptions {
@@ -18,11 +19,10 @@ async function confirm(question: string): Promise<boolean> {
 }
 
 export async function cmdClear(options: ClearOptions = {}): Promise<void> {
-  const ok =
-    options.yes || (await confirm(kleur.yellow('⚠️  Supprimer tous les events Trimly? (y/N) ')))
+  const ok = options.yes || (await confirm(kleur.yellow(`⚠️  ${t('clear.confirm')}`)))
 
   if (!ok) {
-    console.log('Annulé.')
+    console.log(t('clear.cancelled'))
     return
   }
 
@@ -41,5 +41,5 @@ export async function cmdClear(options: ClearOptions = {}): Promise<void> {
   }
 
   await storage.close()
-  console.log(kleur.green('✅ Données Trimly supprimées.'))
+  console.log(kleur.green(`✅ ${t('clear.done')}`))
 }

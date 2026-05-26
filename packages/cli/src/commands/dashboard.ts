@@ -1,6 +1,7 @@
 import { createServer } from 'node:net'
 import { spawn } from 'cross-spawn'
 import kleur from 'kleur'
+import { t } from '../i18n/index.js'
 
 const PORT = 3737
 
@@ -20,11 +21,11 @@ export async function cmdDashboard(): Promise<void> {
   const free = await isPortFree(PORT)
 
   if (!free) {
-    console.log(kleur.cyan(`🚀 Trimly dashboard is already running: http://localhost:${PORT}`))
+    console.log(kleur.cyan(`🚀 ${t('dashboard.running', { port: PORT })}`))
     return
   }
 
-  console.log(kleur.cyan(`🚀 Launching Trimly dashboard on http://localhost:${PORT}...`))
+  console.log(kleur.cyan(`🚀 ${t('dashboard.launching', { port: PORT })}`))
 
   const child = spawn('npx', ['@trimly/dashboard'], {
     env: { ...process.env, PORT: String(PORT) },
@@ -33,5 +34,5 @@ export async function cmdDashboard(): Promise<void> {
   })
   child.unref()
 
-  console.log(kleur.green(`   Dashboard started (PID ${child.pid}). Open http://localhost:${PORT}`))
+  console.log(kleur.green(`   ${t('dashboard.started', { pid: child.pid ?? 0, port: PORT })}`))
 }

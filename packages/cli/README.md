@@ -23,9 +23,18 @@ trimly clear            # wipe local data
 
 Run `trimly <command> --help` for options.
 
+## Languages
+
+The CLI is localized in **24 EU languages**. It auto-detects from `$LANG`, or set it
+explicitly — `"locale": "de"` in `~/.trimly/config.json`, or per-invocation:
+
+```bash
+TRIMLY_LOCALE=de trimly stats
+```
+
 ## How it works
 
-`trimly` reads from the same local store that the Trimly Claude Code plugin writes to. Install the plugin to capture token usage automatically as you work, then use the CLI (or `trimly dashboard`) to review spend and savings over time.
+`trimly` reads from the same local store that the Trimly plugin writes to. Install the plugin for your agent — **Claude Code, OpenAI Codex, or Cursor** — to capture token usage automatically as you work, then use the CLI (or `trimly dashboard`) to review spend and savings over time.
 
 Built on [`@trimly/core`](https://www.npmjs.com/package/@trimly/core).
 

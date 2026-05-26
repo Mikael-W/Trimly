@@ -39,7 +39,7 @@ onMounted(() => {
     <h1 class="page-title">{{ t('settings.title') }}</h1>
 
     <div class="settings-card">
-      <div class="setting-row">
+      <div class="setting-row setting-row--column">
         <div class="setting-label-group">
           <span class="setting-label">{{ t('settings.language') }}</span>
         </div>
@@ -218,15 +218,15 @@ onMounted(() => {
 .setting-input::placeholder { color: var(--text-muted); }
 
 .setting-select {
+  width: 100%;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-size: 13px;
   color: var(--text);
   outline: none;
   cursor: pointer;
-  flex-shrink: 0;
 }
 
 .setting-select:focus { border-color: var(--violet); }
