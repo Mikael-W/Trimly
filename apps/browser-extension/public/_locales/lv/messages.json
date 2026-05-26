@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Marķieru lietojuma izsekotājs un uzvedņu optimizētājs Claude Code" },
+  "popup_today": { "message": "Šodien" },
+  "popup_month": { "message": "Šomēnes" },
+  "popup_requests": { "message": "pieprasījumi" },
+  "popup_saved": { "message": "Ietaupīts" },
+  "popup_export": { "message": "Eksportēt JSON" },
+  "popup_loading": { "message": "Notiek ielāde…" }
+}

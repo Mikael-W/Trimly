@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Проследяване на потреблението на токени и оптимизатор на подкани за Claude Code" },
+  "popup_today": { "message": "Днес" },
+  "popup_month": { "message": "Този месец" },
+  "popup_requests": { "message": "заявки" },
+  "popup_saved": { "message": "Спестено" },
+  "popup_export": { "message": "Експортиране на JSON" },
+  "popup_loading": { "message": "Зареждане…" }
+}

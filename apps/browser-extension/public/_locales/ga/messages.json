@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Rianaitheoir úsáide tokens agus optamóir leideanna do Claude Code" },
+  "popup_today": { "message": "Inniu" },
+  "popup_month": { "message": "An mhí seo" },
+  "popup_requests": { "message": "iarratais" },
+  "popup_saved": { "message": "Coigilte" },
+  "popup_export": { "message": "Easpórtáil JSON" },
+  "popup_loading": { "message": "Á lódáil…" }
+}

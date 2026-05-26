@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Tracker tal-użu tat-tokens u ottimizzatur tal-prompts għal Claude Code" },
+  "popup_today": { "message": "Illum" },
+  "popup_month": { "message": "Dan ix-xahar" },
+  "popup_requests": { "message": "talbiet" },
+  "popup_saved": { "message": "Iffrankat" },
+  "popup_export": { "message": "Esporta JSON" },
+  "popup_loading": { "message": "Qed jitgħabba…" }
+}

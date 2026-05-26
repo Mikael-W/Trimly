@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Tokenikasutuse jälgija ja viibaoptimeerija Claude Code'i jaoks" },
+  "popup_today": { "message": "Täna" },
+  "popup_month": { "message": "Sel kuul" },
+  "popup_requests": { "message": "päringut" },
+  "popup_saved": { "message": "Säästetud" },
+  "popup_export": { "message": "Ekspordi JSON" },
+  "popup_loading": { "message": "Laadimine…" }
+}

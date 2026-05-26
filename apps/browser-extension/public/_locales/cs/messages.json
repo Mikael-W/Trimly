@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Sledování spotřeby tokenů a optimalizátor promptů pro Claude Code" },
+  "popup_today": { "message": "Dnes" },
+  "popup_month": { "message": "Tento měsíc" },
+  "popup_requests": { "message": "požadavky" },
+  "popup_saved": { "message": "Ušetřeno" },
+  "popup_export": { "message": "Exportovat JSON" },
+  "popup_loading": { "message": "Načítání…" }
+}

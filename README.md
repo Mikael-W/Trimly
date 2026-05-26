@@ -90,7 +90,7 @@ node ~/.claude/plugins/trimly/integrations/cursor-setup.mjs
 
 **📊 Budget + ETA.** Set a monthly budget; Trimly tracks your daily burn rate and tells you how many days until you blow past it.
 
-**📈 Local dashboard.** A Nuxt dashboard (overview, events, savings, settings) running entirely on your machine — history, sparklines, per-model breakdown.
+**📈 Local dashboard.** A Nuxt dashboard (overview, events, savings, settings) running entirely on your machine — history, sparklines, per-model breakdown. Localized in **24 EU languages**.
 
 **🔒 Local-first.** Everything lives in a local SQLite database at `~/.trimly`. No account, no cloud, no telemetry.
 

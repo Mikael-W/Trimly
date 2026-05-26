@@ -5,6 +5,10 @@ const { currency, usdToEur, setCurrency, setRate } = useCurrency()
 
 useHead({ title: `${t('settings.title')} — Trimly` })
 
+function onLangChange(e: Event) {
+  setLocale((e.target as HTMLSelectElement).value as typeof locale.value)
+}
+
 const rateInput = ref(String(usdToEur.value))
 const dbPath = ref(
   typeof window !== 'undefined' ? (localStorage.getItem('trimly.dbPath') ?? '') : '',
@@ -39,17 +43,11 @@ onMounted(() => {
         <div class="setting-label-group">
           <span class="setting-label">{{ t('settings.language') }}</span>
         </div>
-        <div class="toggle-group">
-          <button
-            v-for="loc in locales"
-            :key="loc.code"
-            class="toggle-btn"
-            :class="{ 'toggle-btn--active': locale === loc.code }"
-            @click="setLocale(loc.code)"
-          >
+        <select class="setting-select" :value="locale" @change="onLangChange">
+          <option v-for="loc in locales" :key="loc.code" :value="loc.code">
             {{ loc.name }}
-          </button>
-        </div>
+          </option>
+        </select>
       </div>
 
       <div class="setting-row">
@@ -218,6 +216,20 @@ onMounted(() => {
 
 .setting-input:focus { border-color: var(--violet); }
 .setting-input::placeholder { color: var(--text-muted); }
+
+.setting-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.setting-select:focus { border-color: var(--violet); }
 
 .setting-footer {
   padding: 1rem 1.5rem;

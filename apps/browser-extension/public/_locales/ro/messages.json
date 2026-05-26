@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Monitor de utilizare a tokenurilor și optimizator de prompturi pentru Claude Code" },
+  "popup_today": { "message": "Astăzi" },
+  "popup_month": { "message": "Luna aceasta" },
+  "popup_requests": { "message": "cereri" },
+  "popup_saved": { "message": "Economisit" },
+  "popup_export": { "message": "Exportă JSON" },
+  "popup_loading": { "message": "Se încarcă…" }
+}

@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Tokenforbrugssporing og promptoptimering til Claude Code" },
+  "popup_today": { "message": "I dag" },
+  "popup_month": { "message": "Denne måned" },
+  "popup_requests": { "message": "anmodninger" },
+  "popup_saved": { "message": "Sparet" },
+  "popup_export": { "message": "Eksportér JSON" },
+  "popup_loading": { "message": "Indlæser…" }
+}

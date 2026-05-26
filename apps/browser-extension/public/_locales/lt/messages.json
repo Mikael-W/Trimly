@@ -1,0 +1,10 @@
+{
+  "ext_name": { "message": "Trimly" },
+  "ext_description": { "message": "Žetonų naudojimo stebėjimo ir užklausų optimizavimo įrankis Claude Code" },
+  "popup_today": { "message": "Šiandien" },
+  "popup_month": { "message": "Šį mėnesį" },
+  "popup_requests": { "message": "užklausos" },
+  "popup_saved": { "message": "Sutaupyta" },
+  "popup_export": { "message": "Eksportuoti JSON" },
+  "popup_loading": { "message": "Įkeliama…" }
+}
