@@ -1,0 +1,13 @@
+{
+  "name": "trimly",
+  "owner": { "name": "JOYS LAB", "url": "https://github.com/Mikael-W" },
+  "description": "Trimly — see and trim your AI token spend.",
+  "plugins": [
+    {
+      "name": "trimly",
+      "source": "./apps/claude-code-plugin",
+      "description": "Live token cost, budget tracking, and prompt slimming (24 EU languages) for Claude Code, Codex, and Cursor. 100% local, no telemetry.",
+      "keywords": ["tokens", "cost", "budget", "llm", "optimization", "anthropic", "openai"]
+    }
+  ]
+}

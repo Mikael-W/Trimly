@@ -36,6 +36,9 @@ Thumbs.db
 .output/
 .data/
 
+# Plugin bootstrap deps (installed on first run)
+.deps/
+
 # Extension build
 apps/browser-extension/dist/
 apps/browser-extension/*.zip

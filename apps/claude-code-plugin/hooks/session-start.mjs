@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { ensureCore } from './shared/ensure-core.mjs'
 import { readStdinJson } from './shared/stdin.mjs'
 import { getCore } from './shared/storage.mjs'
 
@@ -8,6 +9,8 @@ async function main() {
 
   const { session_id = '', cwd = '' } = input
   if (!session_id) process.exit(0)
+
+  ensureCore(process.env.CLAUDE_PLUGIN_ROOT ?? new URL('..', import.meta.url).pathname)
 
   try {
     const core = await getCore()

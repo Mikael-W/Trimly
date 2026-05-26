@@ -1,9 +1,10 @@
 {
   "name": "trimly",
-  "version": "0.1.0",
-  "description": "See and trim your Claude Code token spend",
-  "author": "Mika (JOYS LAB)",
+  "version": "0.3.0",
+  "description": "See and trim your AI token spend — live cost, budget, and prompt slimming across Claude Code, Codex, and Cursor.",
+  "author": { "name": "JOYS LAB" },
   "license": "Apache-2.0",
-  "homepage": "https://trimly.dev",
-  "repository": "https://github.com/joyslab/trimly"
+  "homepage": "https://github.com/Mikael-W/Trimly",
+  "repository": "https://github.com/Mikael-W/Trimly",
+  "keywords": ["tokens", "cost", "budget", "llm", "optimization", "anthropic", "openai"]
 }
