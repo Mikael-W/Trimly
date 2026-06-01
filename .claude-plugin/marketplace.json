@@ -1,6 +1,6 @@
 {
   "name": "trimly",
-  "owner": { "name": "JOYS LAB", "url": "https://github.com/Mikael-W" },
+  "owner": { "name": "Mikael Wawrziczny (JOYS-LAB)", "url": "https://github.com/Mikael-W" },
   "description": "Trimly — see and trim your AI token spend.",
   "plugins": [
     {
