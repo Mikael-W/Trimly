@@ -30,6 +30,14 @@ export interface OptimizeConfig {
   mode: 'advisor' | 'auto' | 'off'
 }
 
+export type ContextStrategy = 'whitespace' | 'dedup' | 'compactHistory'
+
+export interface ContextConfig {
+  measure: boolean
+  rewrite: boolean
+  strategies: ContextStrategy[]
+}
+
 export interface ProviderKeys {
   anthropic?: string
   openai?: string
@@ -41,6 +49,7 @@ export interface TrimlyConfig {
   advisor: boolean
   agent: AgentId | 'auto'
   optimize: OptimizeConfig
+  context?: ContextConfig
   filler: FillerConfig
   storage: StorageConfig
   currency: 'USD' | 'EUR'
@@ -56,6 +65,7 @@ export const DEFAULT_CONFIG: TrimlyConfig = {
   advisor: true,
   agent: 'auto',
   optimize: { mode: 'advisor' },
+  context: { measure: true, rewrite: false, strategies: ['whitespace', 'dedup'] },
   filler: {
     enabled: true,
     languages: ['fr', 'en'],

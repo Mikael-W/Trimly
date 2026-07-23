@@ -1,4 +1,4 @@
-export type EventSource = 'claude-code' | 'browser-extension'
+export type EventSource = 'claude-code' | 'browser-extension' | 'codex' | 'cursor' | 'gemini'
 export type EventStatus = 'pending' | 'completed'
 
 export interface TrimlyEvent {

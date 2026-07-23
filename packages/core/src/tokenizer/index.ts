@@ -12,6 +12,8 @@ export function countTokens(provider: Provider, model: string, text: string): nu
       return countTokensOpenAI(model, text)
     case 'mistral':
       return countTokensMistral(text)
+    case 'google':
+      return Math.ceil(text.length / 4)
     default:
       return Math.ceil(text.length / 4)
   }

@@ -21,6 +21,12 @@ describe('Given detectAgent', () => {
     })
   })
 
+  describe('When the env carries a Gemini marker', () => {
+    test('Then it returns gemini', () => {
+      expect(detectAgent({ GEMINI_CLI: '1' })).toBe('gemini')
+    })
+  })
+
   describe('When no marker is present', () => {
     test('Then it returns unknown', () => {
       expect(detectAgent({})).toBe('unknown')
@@ -95,6 +101,72 @@ describe('Given the cursor adapter', () => {
   describe('When formatting advisor output', () => {
     test('Then it emits nothing', () => {
       expect(adapter.formatOutput({ context: 'tip' }, 'UserPromptSubmit')).toBe('')
+    })
+  })
+})
+
+describe('Given the gemini adapter', () => {
+  const adapter = createAdapter('gemini')
+
+  describe('When parsing a BeforeModel payload', () => {
+    test('Then it extracts the resent messages and maps model role to assistant', () => {
+      const p = adapter.parsePayload('BeforeModel', {
+        session_id: 'g1',
+        llm_request: {
+          model: 'gemini-3.1-pro-preview',
+          messages: [
+            { role: 'system', content: 'sys' },
+            { role: 'user', content: 'hi' },
+            { role: 'model', content: 'yo' },
+          ],
+        },
+      })
+      expect(p.sessionId).toBe('g1')
+      expect(p.model).toBe('gemini-3.1-pro-preview')
+      expect(p.messages).toEqual([
+        { role: 'system', content: 'sys' },
+        { role: 'user', content: 'hi' },
+        { role: 'assistant', content: 'yo' },
+      ])
+    })
+  })
+
+  describe('When parsing an AfterModel payload', () => {
+    test('Then it exposes the usageMetadata token counts', () => {
+      const p = adapter.parsePayload('AfterModel', {
+        llm_response: { usageMetadata: { totalTokenCount: 1234, promptTokenCount: 1000 } },
+      })
+      expect(p.usage?.totalTokenCount).toBe(1234)
+      expect(p.usage?.promptTokenCount).toBe(1000)
+    })
+  })
+
+  describe('When formatting advisor output', () => {
+    test('Then it emits additionalContext without a hookEventName', () => {
+      const out = JSON.parse(adapter.formatOutput({ context: 'tip' }, 'UserPromptSubmit'))
+      expect(out.hookSpecificOutput.additionalContext).toBe('tip')
+      expect(out.hookSpecificOutput.hookEventName).toBeUndefined()
+    })
+  })
+
+  describe('When formatting a model rewrite', () => {
+    test('Then it emits an llm_request override mapping assistant back to model', () => {
+      const out = JSON.parse(
+        adapter.formatModelRewrite?.(
+          { messages: [{ role: 'assistant', content: 'x' }] },
+          'BeforeModel',
+        ) ?? '',
+      )
+      expect(out.hookSpecificOutput.llm_request.messages).toEqual([{ role: 'model', content: 'x' }])
+    })
+  })
+
+  describe('When resolving the model', () => {
+    test('Then it defaults to the google gemini-3.1-pro-preview model', () => {
+      expect(adapter.resolveModel({})).toEqual({
+        provider: 'google',
+        model: 'gemini-3.1-pro-preview',
+      })
     })
   })
 })

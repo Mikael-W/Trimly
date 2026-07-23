@@ -24,6 +24,16 @@ describe('Given the computeCost function', () => {
     })
   })
 
+  describe('When called with the Google provider and a Gemini model', () => {
+    test('Then it computes a non-zero USD cost from the gemini pricing', () => {
+      const cost = computeCost('google', 'gemini-3.1-pro-preview', {
+        input_tokens: 1_000_000,
+        output_tokens: 0,
+      })
+      expect(cost).toBeCloseTo(2.0, 4)
+    })
+  })
+
   describe('When called with an unknown provider', () => {
     test('Then it returns 0', () => {
       expect(
